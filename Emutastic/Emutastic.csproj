@@ -53,6 +53,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\portable\ymircore\ymir-sdl3.exe;..\portable\ymircore\Ymir.toml;..\portable\ymircore\gamecontrollerdb.txt;..\portable\ymircore\ipl.bin;..\portable\ymircore\z.dll;..\portable\ymircore\zd.dll;..\portable\ymircore\zstd.dll" Condition="Exists('..\portable\ymircore\ymir-sdl3.exe')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Link>ymircore\%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
     <PackageReference Include="Vortice.Direct3D11" Version="3.6.2" />

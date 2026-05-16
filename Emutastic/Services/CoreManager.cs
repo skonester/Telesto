@@ -44,6 +44,7 @@ namespace Emutastic.Services
             // Kronos kept as an alternative for users who need its OpenGL HW
             // upscaling or its Panzer Dragoon Saga / VF3tb fixes.
             { "Saturn",      new[] { "mednafen_saturn_libretro.dll",
+                                     YmirLauncher.CoreId,
                                      "kronos_libretro.dll",
                                      "yabause_libretro.dll"             }},
             { "SMS",         new[] { "genesis_plus_gx_libretro.dll",
@@ -227,6 +228,11 @@ namespace Emutastic.Services
             _configService = configService;
         }
 
+        public static bool IsCoreInstalled(string coresFolder, string coreName)
+            => YmirLauncher.IsYmirCore(coreName)
+                ? YmirLauncher.IsAvailable()
+                : File.Exists(Path.Combine(coresFolder, coreName));
+
         public string? GetCorePath(string console)
         {
             if (!ConsoleCoreMap.TryGetValue(console, out string[]? candidates))
@@ -238,6 +244,9 @@ namespace Emutastic.Services
                 var preferences = _configService.GetCorePreferences();
                 if (preferences.PreferredCores.TryGetValue(console, out string? preferredCore))
                 {
+                    if (YmirLauncher.IsYmirCore(preferredCore))
+                        return null;
+
                     string preferredPath = Path.Combine(_coresFolder, preferredCore);
                     if (File.Exists(preferredPath))
                     {
@@ -250,6 +259,9 @@ namespace Emutastic.Services
             // Fall back to default priority order
             foreach (string dll in candidates)
             {
+                if (YmirLauncher.IsYmirCore(dll))
+                    continue;
+
                 string path = Path.Combine(_coresFolder, dll);
                 if (File.Exists(path))
                     return path;
@@ -312,7 +324,12 @@ namespace Emutastic.Services
         }
 
         public bool HasCore(string console)
-            => GetCorePath(console) != null;
+        {
+            if (!ConsoleCoreMap.TryGetValue(console, out string[]? candidates))
+                return false;
+
+            return candidates.Any(core => IsCoreInstalled(_coresFolder, core));
+        }
 
         public List<string> GetMissingCores(string console)
         {
@@ -322,6 +339,13 @@ namespace Emutastic.Services
 
             foreach (string dll in candidates)
             {
+                if (YmirLauncher.IsYmirCore(dll))
+                {
+                    if (!YmirLauncher.IsAvailable())
+                        missing.Add(dll);
+                    continue;
+                }
+
                 string path = Path.Combine(_coresFolder, dll);
                 if (!File.Exists(path))
                     missing.Add(dll);

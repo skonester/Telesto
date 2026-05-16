@@ -288,6 +288,60 @@ namespace Emutastic.Views
         {
             var coreManager = new CoreManager(App.Configuration!);
 
+            if (!System.IO.File.Exists(_game.RomPath))
+            {
+                bool wasTempExtracted = _game.RomPath.IndexOf(@"\Temp\Emutastic\",
+                    System.StringComparison.OrdinalIgnoreCase) >= 0;
+
+                string msg = wasTempExtracted
+                    ? "This game was imported from a .zip and Windows has cleared its " +
+                      "temporary working folder.\n\nRemove the entry from your library " +
+                      "and re-import the original archive - newer imports stay persistent."
+                    : $"ROM file not found:\n{_game.RomPath}";
+                MessageBox.Show(msg,
+                    wasTempExtracted ? "Re-import Required" : "File Not Found",
+                    MessageBoxButton.OK,
+                    wasTempExtracted ? MessageBoxImage.Warning : MessageBoxImage.Error);
+                return;
+            }
+
+            bool isSaturn = string.Equals(_game.Console, "Saturn", StringComparison.OrdinalIgnoreCase);
+            bool ymirPreferred = YmirLauncher.IsPreferredFor(_game, App.Configuration);
+            bool launchYmir = isSaturn
+                && YmirLauncher.IsAvailable()
+                && (ymirPreferred || coreManager.GetCorePathForGame(_game) == null);
+
+            if (launchYmir)
+            {
+                try
+                {
+                    YmirLauncher.Launch(_game);
+                    _db.UpdatePlayCount(_game.Id);
+                    _game.PlayCount++;
+                    _game.LastPlayed = DateTime.Now;
+                    if (IsVisible) RefreshStats();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"Failed to launch Ymir:\n\n{ex.Message}",
+                        "Launch Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+                return;
+            }
+
+            if (ymirPreferred)
+            {
+                MessageBox.Show(
+                    "Ymir standalone is selected for Saturn, but ymir-sdl3.exe was not found.",
+                    "Missing Ymir",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
             // Check for missing BIOS before attempting to launch.
             string systemDir = AppPaths.GetFolder("System");
             string region = RomService.DetectRegion(_game.RomPath);
@@ -332,7 +386,17 @@ namespace Emutastic.Views
 
             try
             {
-                string corePath = coreManager.GetCorePathForGame(_game)!;
+                string? corePath = coreManager.GetCorePathForGame(_game);
+                if (string.IsNullOrEmpty(corePath))
+                {
+                    MessageBox.Show(
+                        $"No libretro core found for {_game.Console}.",
+                        "Missing Core",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
                 EmulatorWindow.FreeStaleDll(); // must be BEFORE LoadLibrary
                 var core = new LibretroCore(corePath);
                 var emulator = new EmulatorWindow(_game, core);

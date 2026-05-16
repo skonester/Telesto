@@ -56,8 +56,7 @@ namespace Emutastic.Views
 
                 foreach (var dll in coreDlls)
                 {
-                    string path = Path.Combine(coresFolder, dll);
-                    bool exists = File.Exists(path);
+                    bool exists = CoreManager.IsCoreInstalled(coresFolder, dll);
                     string displayName = FormatCoreName(dll);
 
                     availableCores.Add(new CoreOption
@@ -182,6 +181,9 @@ namespace Emutastic.Views
 
         private static string FormatCoreName(string dllName)
         {
+            if (YmirLauncher.IsYmirCore(dllName))
+                return YmirLauncher.DisplayName;
+
             // Remove _libretro.dll suffix and format nicely
             string name = dllName.Replace("_libretro.dll", "", StringComparison.OrdinalIgnoreCase);
             

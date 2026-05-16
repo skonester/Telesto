@@ -1799,7 +1799,7 @@ namespace Emutastic.Views
                 {
                     var cores = Services.CoreManager.ConsoleCoreMap[c];
                     catTotal += cores.Length;
-                    catInstalled += cores.Count(dll => IsInstalled(dll));
+                    catInstalled += cores.Count(dll => CoreManager.IsCoreInstalled(coresFolder, dll));
                 }
 
                 // Category accordion header
@@ -1896,9 +1896,11 @@ namespace Emutastic.Views
                         .Select(dll => new
                         {
                             Dll = dll,
-                            Path = System.IO.Path.Combine(coresFolder, dll),
+                            Path = YmirLauncher.IsYmirCore(dll)
+                                ? YmirLauncher.GetExecutablePath() ?? ""
+                                : System.IO.Path.Combine(coresFolder, dll),
                             Friendly = FormatCoreName(dll),
-                            Installed = IsInstalled(dll),
+                            Installed = CoreManager.IsCoreInstalled(coresFolder, dll),
                             CatalogEntry = CoreDownloadService.Catalog.FirstOrDefault(
                                 c => c.FileName.Equals(dll, StringComparison.OrdinalIgnoreCase))
                         })
@@ -3207,6 +3209,9 @@ namespace Emutastic.Views
 
         private static string FormatCoreName(string dllName)
         {
+            if (YmirLauncher.IsYmirCore(dllName))
+                return YmirLauncher.DisplayName;
+
             string name = dllName.Replace("_libretro.dll", "", StringComparison.OrdinalIgnoreCase);
             return name switch
             {

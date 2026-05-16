@@ -158,7 +158,7 @@ namespace Emutastic.Configuration
         public int CardWidth { get; set; } = 148;
         /// <summary>
         /// When true, uses standard Windows chrome (system title bar + min/max/close buttons)
-        /// instead of the custom macOS-style frameless window.
+        /// instead of Telesto's custom frameless window.
         /// Applied on next launch.
         /// </summary>
         public bool UseWindowsChrome { get; set; } = false;

@@ -2793,7 +2793,29 @@ namespace Emutastic
                 return;
             }
 
+            if (Services.YmirLauncher.IsPreferredFor(game, App.Configuration))
+            {
+                MessageBox.Show(
+                    "Ymir standalone does not support Telesto save-state loading yet.\n\nUse Play Game to launch this Saturn title with Ymir, or choose a libretro Saturn core to load Telesto save states.",
+                    "Save State Not Available",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
             string? corePath = _coreManager.GetCorePathForGame(game);
+            if (corePath == null
+                && string.Equals(game.Console, "Saturn", StringComparison.OrdinalIgnoreCase)
+                && Services.YmirLauncher.IsAvailable())
+            {
+                MessageBox.Show(
+                    "Ymir standalone does not support Telesto save-state loading yet.\n\nUse Play Game to launch this Saturn title with Ymir, or choose a libretro Saturn core to load Telesto save states.",
+                    "Save State Not Available",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
             if (corePath == null)
             {
                 MessageBox.Show($"No core found for {game.Console}.", "Error",

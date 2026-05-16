@@ -184,37 +184,22 @@
 
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
-                            VerticalAlignment="Center"
-                            Margin="0,0,8,0">
+                            VerticalAlignment="Top">
                     <Button x:Name="MinBtn"
-                            Width="12" Height="12"
-                            Margin="0,0,5,0"
-                            Click="MinBtn_Click">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Ellipse Fill="{DynamicResource TrafficYellowBrush}"/>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                            Style="{StaticResource WindowsCaptionButton}"
+                            Click="MinBtn_Click"
+                            ToolTip="Minimize"
+                            Content="&#xE921;"/>
                     <Button x:Name="MaxBtn"
-                            Width="12" Height="12"
-                            Margin="0,0,5,0"
-                            Click="MaxBtn_Click">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Ellipse Fill="{DynamicResource GreenBrush}"/>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                            Style="{StaticResource WindowsCaptionButton}"
+                            Click="MaxBtn_Click"
+                            ToolTip="Maximize"
+                            Content="&#xE922;"/>
                     <Button x:Name="CloseBtn"
-                            Width="12" Height="12"
-                            Click="CloseBtn_Click">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Ellipse Fill="{DynamicResource TrafficRedBrush}"/>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                            Style="{StaticResource WindowsCloseCaptionButton}"
+                            Click="CloseBtn_Click"
+                            ToolTip="Close"
+                            Content="&#xE8BB;"/>
                 </StackPanel>
             </Grid>
 

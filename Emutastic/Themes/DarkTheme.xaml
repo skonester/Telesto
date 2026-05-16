@@ -38,6 +38,10 @@
     <Color x:Key="TrafficGreenHoverColor">#1FA832</Color>
     <Color x:Key="TrafficRedColor">#FF5F57</Color>
     <Color x:Key="TrafficRedHoverColor">#E5453D</Color>
+    <Color x:Key="CaptionButtonHoverColor">#2F2F32</Color>
+    <Color x:Key="CaptionButtonPressedColor">#252528</Color>
+    <Color x:Key="CaptionCloseHoverColor">#C42B1C</Color>
+    <Color x:Key="CaptionClosePressedColor">#A82418</Color>
 
     <!-- Overlay (Emulator) -->
     <Color x:Key="OverlayBgColor">#121214</Color>
@@ -104,6 +108,10 @@
     <SolidColorBrush x:Key="TrafficGreenHoverBrush"    Color="{StaticResource TrafficGreenHoverColor}"/>
     <SolidColorBrush x:Key="TrafficRedBrush"           Color="{StaticResource TrafficRedColor}"/>
     <SolidColorBrush x:Key="TrafficRedHoverBrush"      Color="{StaticResource TrafficRedHoverColor}"/>
+    <SolidColorBrush x:Key="CaptionButtonHoverBrush"   Color="{StaticResource CaptionButtonHoverColor}"/>
+    <SolidColorBrush x:Key="CaptionButtonPressedBrush" Color="{StaticResource CaptionButtonPressedColor}"/>
+    <SolidColorBrush x:Key="CaptionCloseHoverBrush"    Color="{StaticResource CaptionCloseHoverColor}"/>
+    <SolidColorBrush x:Key="CaptionClosePressedBrush"  Color="{StaticResource CaptionClosePressedColor}"/>
 
     <SolidColorBrush x:Key="PillBgBrush"         Color="{StaticResource PillBgColor}"/>
     <SolidColorBrush x:Key="PillBorderBrush"     Color="{StaticResource PillBorderColor}"/>
@@ -530,6 +538,62 @@
                     <Rectangle Height="1"
                                Fill="{DynamicResource BorderNormalBrush}"
                                Margin="10,4"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Windows-style caption buttons -->
+    <Style x:Key="WindowsCaptionButton" TargetType="Button">
+        <Setter Property="Width" Value="46"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="bd" Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="False"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{StaticResource CaptionButtonHoverBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{StaticResource CaptionButtonPressedBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="WindowsCloseCaptionButton" TargetType="Button" BasedOn="{StaticResource WindowsCaptionButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="bd" Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="False"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{StaticResource CaptionCloseHoverBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{StaticResource CaptionClosePressedBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -562,58 +562,22 @@
                     <!-- Window buttons -->
                     <StackPanel Grid.Column="1"
                                 Orientation="Horizontal"
-                                VerticalAlignment="Center"
-                                Margin="0,0,10,0">
+                                VerticalAlignment="Top">
                         <Button x:Name="MinimizeButton"
-                                Width="13" Height="13"
-                                Margin="0,0,6,0"
-                                Cursor="Hand"
+                                Style="{StaticResource WindowsCaptionButton}"
                                 Click="MinimizeButton_Click"
-                                ToolTip="Minimize">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Ellipse x:Name="circle" Fill="{DynamicResource TrafficYellowBrush}"/>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="circle" Property="Fill" Value="{DynamicResource TrafficYellowHoverBrush}"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                                ToolTip="Minimize"
+                                Content="&#xE921;"/>
                         <Button x:Name="MaximizeButton"
-                                Width="13" Height="13"
-                                Margin="0,0,6,0"
-                                Cursor="Hand"
+                                Style="{StaticResource WindowsCaptionButton}"
                                 Click="MaximizeButton_Click"
-                                ToolTip="Maximize">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Ellipse x:Name="circle" Fill="{DynamicResource GreenBrush}"/>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="circle" Property="Fill" Value="{DynamicResource TrafficGreenHoverBrush}"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                                ToolTip="Maximize"
+                                Content="&#xE922;"/>
                         <Button x:Name="CloseButton"
-                                Width="13" Height="13"
-                                Cursor="Hand"
+                                Style="{StaticResource WindowsCloseCaptionButton}"
                                 Click="CloseButton_Click"
-                                ToolTip="Close">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Ellipse x:Name="circle" Fill="{DynamicResource TrafficRedBrush}"/>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="circle" Property="Fill" Value="{DynamicResource TrafficRedHoverBrush}"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                                ToolTip="Close"
+                                Content="&#xE8BB;"/>
                     </StackPanel>
                 </Grid>
             </Grid>
