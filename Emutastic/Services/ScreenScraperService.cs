@@ -16,7 +16,7 @@ namespace Emutastic.Services
     public class ScreenScraperService
     {
         private const string BaseUrl    = "https://www.screenscraper.fr/api2/";
-        private const string SoftName   = "Emutastic";
+        private const string SoftName   = "Telesto";
         private const string DevId      = "stragee";
         private const string DevPass    = "2ixrETMUmd9";
 

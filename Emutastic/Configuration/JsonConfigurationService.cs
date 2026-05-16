@@ -55,7 +55,7 @@ namespace Emutastic.Configuration
             else
             {
                 string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                appFolder = Path.Combine(appData, "Emutastic");
+                appFolder = Path.Combine(appData, "Telesto");
             }
             Directory.CreateDirectory(appFolder);
             _configPath = Path.Combine(appFolder, "config.json");

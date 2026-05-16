@@ -858,8 +858,8 @@ namespace Emutastic.Services
                     apiVersion = coreAppInfo.apiVersion;
             }
 
-            var appNamePtr = Marshal.StringToHGlobalAnsi("Emutastic");
-            var engineNamePtr = Marshal.StringToHGlobalAnsi("Emutastic");
+            var appNamePtr = Marshal.StringToHGlobalAnsi("Telesto");
+            var engineNamePtr = Marshal.StringToHGlobalAnsi("Telesto");
 
             var appInfo = new VkApplicationInfo
             {

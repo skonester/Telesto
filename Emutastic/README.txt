@@ -1,5 +1,5 @@
 ================================================================================
- Emutastic — Quick Start Guide
+ Telesto — Quick Start Guide
 ================================================================================
 
 REQUIREMENTS
@@ -12,14 +12,14 @@ That's it. No other runtime installation needed.
 
 WINDOWS SMARTSCREEN
 -------------------
-Emutastic is not code-signed, so Windows SmartScreen may block the app
+Telesto is not code-signed, so Windows SmartScreen may block the app
 on first launch. Click "More info" then "Run anyway" to proceed. This
 is normal for unsigned open-source software.
 
 
 GETTING STARTED
 ---------------
-1. Run Emutastic.exe
+1. Run Telesto.exe
 
 2. Open Preferences (gear icon) and go to Cores / Extras:
    - Download the cores for the systems you want to play
@@ -39,7 +39,7 @@ GETTING STARTED
 
 CONTROLLERS
 -----------
-Connect your controller before launching Emutastic. Button mappings are
+Connect your controller before launching Telesto. Button mappings are
 configurable in Preferences → Controls. Controllers are detected
 automatically — no refresh needed.
 
@@ -47,9 +47,9 @@ automatically — no refresh needed.
 BIOS FILES
 ----------
 Place BIOS files in:
-  %AppData%\Emutastic\System\
+  %AppData%\Telesto\System\
   (or wherever your data directory is set; in portable mode this is
-  PortableData\System\ next to Emutastic.exe)
+  PortableData\System\ next to Telesto.exe)
 
 You can also place them in the same folder as your ROMs for that system.
 See Preferences → System Files for the exact filenames required per system.
@@ -57,16 +57,16 @@ See Preferences → System Files for the exact filenames required per system.
 
 PORTABLE MODE
 -------------
-Run Emutastic from a USB stick, take it between PCs, sync the whole
-folder — everything Emutastic needs lives inside the install folder.
+Run Telesto from a USB stick, take it between PCs, sync the whole
+folder — everything Telesto needs lives inside the install folder.
 
 Either trigger works (both opt-in):
 
   1. Create an empty file named  portable.txt  in the same folder as
-     Emutastic.exe, then launch.
+     Telesto.exe, then launch.
   OR
-  2. Launch Emutastic with the  --portable  command-line flag:
-       Emutastic.exe --portable
+  2. Launch Telesto with the  --portable  command-line flag:
+       Telesto.exe --portable
      Useful for desktop shortcuts when you don't want to leave a
      marker file in the folder.
 
@@ -78,7 +78,7 @@ files, libretro cores, and ROMs you import. Nothing is written to
 
 True USB portability — what to expect:
 
-  • Move the entire Emutastic folder to a USB stick.
+  • Move the entire Telesto folder to a USB stick.
   • Plug the USB into ANY Windows PC; the drive letter doesn't matter
     (it can be E: on one PC and F: on another). Library paths are
     stored relative to PortableData, so they don't break across PCs.
@@ -90,12 +90,12 @@ True USB portability — what to expect:
 
 Important — enable portable mode BEFORE importing ROMs:
 
-  ROMs imported while Emutastic is running in normal mode stay at
+  ROMs imported while Telesto is running in normal mode stay at
   their original location, and the database stores the absolute path
   to wherever you grabbed them from. Switching to portable mode
   afterwards does NOT reach back to copy those ROMs into PortableData.
 
-  If you've already been using Emutastic in normal mode and want to
+  If you've already been using Telesto in normal mode and want to
   switch to portable, the cleanest path is: enable portable mode
   first (drop portable.txt, launch once), then re-import your ROM
   folder. The portable launch will copy each ROM into PortableData
@@ -154,7 +154,7 @@ CORE SPECIFIC NOTES
 -------------------
 GameCube (Dolphin): The emulator core remains loaded in memory after
 closing a game to prevent a crash during cleanup. This is harmless
-and the memory is reclaimed when Emutastic exits.
+and the memory is reclaimed when Telesto exits.
 
 GameCube on AMD / Intel GPUs: If GameCube games render only in the
 bottom-left corner of the window, open Preferences -> Cores / Extras
@@ -167,7 +167,6 @@ is hidden for GameCube, but the game itself will render correctly.
 
 MORE INFORMATION
 ----------------
-GitHub:  https://github.com/codingncaffeine/Emutastic
-Website: https://emutastic.com
+GitHub: https://github.com/skonester/telesto
 
 ================================================================================

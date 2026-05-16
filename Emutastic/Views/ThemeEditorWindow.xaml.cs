@@ -619,7 +619,7 @@ namespace Emutastic.Views
         {
             var dlg = new SaveFileDialog
             {
-                Filter = "Emutastic Theme (*.emutheme)|*.emutheme",
+                Filter = "Telesto Theme (*.emutheme)|*.emutheme",
                 FileName = "MyTheme.emutheme",
                 Title = "Export Theme",
             };
@@ -634,7 +634,7 @@ namespace Emutastic.Views
                     Name = IoPath.GetFileNameWithoutExtension(dlg.FileName),
                     Author = Environment.UserName,
                     Version = "1.0.0",
-                    Description = "Custom theme created with Emutastic Theme Editor",
+                    Description = "Custom theme created with Telesto Theme Editor",
                     ApiVersion = 1,
                 };
 
@@ -687,7 +687,7 @@ namespace Emutastic.Views
         {
             var dlg = new OpenFileDialog
             {
-                Filter = "Emutastic Theme (*.emutheme)|*.emutheme|JSON Color File (*.json)|*.json",
+                Filter = "Telesto Theme (*.emutheme)|*.emutheme|JSON Color File (*.json)|*.json",
                 Title = "Import Theme",
             };
 

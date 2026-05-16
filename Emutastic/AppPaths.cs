@@ -25,7 +25,7 @@ namespace Emutastic
         /// The default data root: %AppData%\Emutastic.
         /// </summary>
         public static string DefaultRoot { get; } =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Emutastic");
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Telesto");
 
         /// <summary>True when a portable.txt marker was found next to the .exe.</summary>
         public static bool IsPortable => _portable;

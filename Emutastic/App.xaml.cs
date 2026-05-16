@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Threading;
 using System.Windows;
@@ -26,7 +26,7 @@ namespace Emutastic
         {
             // Single-instance guard: if Emutastic is already running, bring it to
             // the front and exit this process instead of launching a second copy.
-            _singleInstanceMutex = new Mutex(true, "Emutastic_SingleInstance_v1", out bool isFirstInstance);
+            _singleInstanceMutex = new Mutex(true, "Telesto_SingleInstance_v1", out bool isFirstInstance);
             if (!isFirstInstance)
             {
                 // Find the existing window and activate it.
@@ -508,7 +508,7 @@ namespace Emutastic
                     var result = System.Windows.MessageBox.Show(
                         "Choose where to store your library (database, saves, artwork, snaps).\n\n" +
                         $"Click Yes to browse, or No to use the default:\n{AppPaths.DefaultRoot}",
-                        "Welcome to Emutastic",
+                        "Welcome to Telesto",
                         System.Windows.MessageBoxButton.YesNo,
                         System.Windows.MessageBoxImage.Question);
 
@@ -522,7 +522,7 @@ namespace Emutastic
                         {
                             string chosen = folderDlg.FolderName;
 
-                            // Detect existing Emutastic data at the chosen location
+                            // Detect existing Telesto data at the chosen location
                             bool hasExistingData = Directory.Exists(Path.Combine(chosen, "Artwork"))
                                 || Directory.Exists(Path.Combine(chosen, "BatterySaves"))
                                 || Directory.Exists(Path.Combine(chosen, "Save States"))
@@ -532,7 +532,7 @@ namespace Emutastic
                             if (hasExistingData && !hasDb)
                             {
                                 System.Windows.MessageBox.Show(
-                                    "Existing Emutastic data found at this location (artwork, saves, etc.).\n\n" +
+                                    "Existing Telesto data found at this location (artwork, saves, etc.).\n\n" +
                                     "A new library database will be created. Import your games and existing artwork will be discovered automatically.",
                                     "Existing Data Found", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                                 FirstRunDiscoveryNeeded = true;

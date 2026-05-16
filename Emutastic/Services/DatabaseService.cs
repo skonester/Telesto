@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using Emutastic.Models;
 using System;
 using System.Collections.Generic;
@@ -137,14 +137,22 @@ namespace Emutastic.Services
             // One-time path migration: fix paths that still reference the old AppData folder name.
             var pathFixCmd = connection.CreateCommand();
             pathFixCmd.CommandText =
-                "UPDATE Games SET CoverArtPath = REPLACE(CoverArtPath, '\\OpenEmuWindows\\', '\\Emutastic\\') " +
+                "UPDATE Games SET CoverArtPath = REPLACE(CoverArtPath, '\\OpenEmuWindows\\', '\\Telesto\\') " +
                 "WHERE CoverArtPath LIKE '%OpenEmuWindows%';" +
-                "UPDATE Games SET RomPath = REPLACE(RomPath, '\\OpenEmuWindows\\', '\\Emutastic\\') " +
+                "UPDATE Games SET RomPath = REPLACE(RomPath, '\\OpenEmuWindows\\', '\\Telesto\\') " +
                 "WHERE RomPath LIKE '%OpenEmuWindows%';" +
-                "UPDATE SaveStates SET FilePath   = REPLACE(FilePath,   '\\OpenEmuWindows\\', '\\Emutastic\\') " +
+                "UPDATE SaveStates SET FilePath   = REPLACE(FilePath,   '\\OpenEmuWindows\\', '\\Telesto\\') " +
                 "WHERE FilePath   LIKE '%OpenEmuWindows%';" +
-                "UPDATE SaveStates SET Screenshot = REPLACE(Screenshot, '\\OpenEmuWindows\\', '\\Emutastic\\') " +
-                "WHERE Screenshot LIKE '%OpenEmuWindows%';";
+                "UPDATE SaveStates SET Screenshot = REPLACE(Screenshot, '\\OpenEmuWindows\\', '\\Telesto\\') " +
+                "WHERE Screenshot LIKE '%OpenEmuWindows%';" +
+                "UPDATE Games SET CoverArtPath = REPLACE(CoverArtPath, '\\Emutastic\\', '\\Telesto\\') " +
+                "WHERE CoverArtPath LIKE '%Emutastic%';" +
+                "UPDATE Games SET RomPath = REPLACE(RomPath, '\\Emutastic\\', '\\Telesto\\') " +
+                "WHERE RomPath LIKE '%Emutastic%';" +
+                "UPDATE SaveStates SET FilePath   = REPLACE(FilePath,   '\\Emutastic\\', '\\Telesto\\') " +
+                "WHERE FilePath   LIKE '%Emutastic%';" +
+                "UPDATE SaveStates SET Screenshot = REPLACE(Screenshot, '\\Emutastic\\', '\\Telesto\\') " +
+                "WHERE Screenshot LIKE '%Emutastic%';";
             pathFixCmd.ExecuteNonQuery();
 
 

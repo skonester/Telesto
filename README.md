@@ -1,12 +1,12 @@
-![Emutastic](Emutastic/Assets/banners%20and%20icons/emutastic-banner-scaled.png)
+![Telesto](Emutastic/Assets/banners%20and%20icons/emutastic-banner-scaled.png)
 
-# Emutastic
+# Telesto
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 A multi-system emulator frontend for Windows built with WPF and .NET 8, inspired by [OpenEmu](https://openemu.org/) on macOS. Games are organized by console in a clean library interface. Emulation is handled by [libretro](https://www.libretro.com/) cores loaded at runtime — no cores are bundled.
 
-**[Visit emutastic.com →](https://www.emutastic.com/emutasticapp.html)** for a visual tour of the app, or grab the [latest release](https://github.com/codingncaffeine/Emutastic/releases) directly.
+**[Grab the latest release](https://github.com/skonester/telesto/releases) directly.**
 
 > **Legal notice:** This project is a frontend only. It does not include, distribute, or facilitate the acquisition of any copyrighted software, ROM images, BIOS files, or other proprietary system files. You are solely responsible for ensuring you have the legal right to use any software you load into this application.
 
@@ -21,7 +21,7 @@ A multi-system emulator frontend for Windows built with WPF and .NET 8, inspired
 - `SDL3.dll` (x64) for controller name detection (downloadable in-app — Preferences → Extras)
 - Optional: `ffmpeg.exe` for video recording, DAT files for ROM identification (also in Preferences → Extras)
 
-> **Windows SmartScreen:** Emutastic is not code-signed. Click **"More info"** then **"Run anyway"** on first launch.
+> **Windows SmartScreen:** Telesto is not code-signed. Click **"More info"** then **"Run anyway"** on first launch.
 
 ---
 
@@ -73,7 +73,7 @@ A multi-system emulator frontend for Windows built with WPF and .NET 8, inspired
 
 ## BIOS Files
 
-Place BIOS files in `%AppData%\Emutastic\System\` (or `PortableData\System\` next to the .exe in portable mode). The app also checks each system's ROM folder.
+Place BIOS files in `%AppData%\Telesto\System\` (or `PortableData\System\` next to the .exe in portable mode). The app also checks each system's ROM folder.
 
 <details>
 <summary><strong>BIOS file details by system</strong></summary>
@@ -98,7 +98,7 @@ Place BIOS files in `%AppData%\Emutastic\System\` (or `PortableData\System\` nex
 
 Drag and drop ROMs onto the library or use **Import ROMs**. The app detects the console from file extension, cleans the title, and hashes the ROM. For ambiguous formats (`.chd`, `.iso`, `.cue`, `.bin`), a SHA1 lookup against DAT files is attempted first — if no match, a console picker is shown.
 
-**Multi-disc games** (Final Fantasy VII, Metal Gear Solid, etc.) are auto-bundled into a single library entry — drop a folder containing the disc files (`.cue`/`.bin` or `.chd`) and Emutastic writes an `.m3u` playlist alongside them so the game shows up once, not three times. Hand-authored `.m3u` files in the folder are honored as-is.
+**Multi-disc games** (Final Fantasy VII, Metal Gear Solid, etc.) are auto-bundled into a single library entry — drop a folder containing the disc files (`.cue`/`.bin` or `.chd`) and Telesto writes an `.m3u` playlist alongside them so the game shows up once, not three times. Hand-authored `.m3u` files in the folder are honored as-is.
 
 **Important:** Download DAT files in **Preferences → Cores / Extras** before importing. Without them, disc images and some cartridge ROMs may be assigned to the wrong system during import.
 
@@ -141,7 +141,7 @@ Earn achievements while playing via [RetroAchievements](https://retroachievement
 
 Press **L3 + Start** in-game to flip between discs/sides on systems that need it. Rebindable to any two-button chord (controller or keyboard) in **Preferences → Controls → Disk Swap**. The status bar shows the new disc number on each swap.
 
-Multi-disc games are auto-bundled at import time — see the [ROM Import](#rom-import) section. See the [wiki page](https://github.com/codingncaffeine/Emutastic/wiki/Disk-Swapping) for per-console specifics and troubleshooting.
+Multi-disc games are auto-bundled at import time — see the [ROM Import](#rom-import) section. See the [wiki page](https://github.com/skonester/telesto/wiki/Disk-Swapping) for per-console specifics and troubleshooting.
 
 </details>
 
@@ -150,11 +150,11 @@ Multi-disc games are auto-bundled at import time — see the [ROM Import](#rom-i
 ## Folder Layout
 
 ```
-Emutastic.exe / rcheevos.dll / .NET runtime DLLs
+Telesto.exe / rcheevos.dll / .NET runtime DLLs
 ```
 
 ```
-%AppData%\Emutastic\          (or your custom data folder)
+%AppData%\Telesto\          (or your custom data folder)
     library.db
     Native\                   (SDL3.dll, ffmpeg.exe — downloadable in-app)
     DATs\                     (No-Intro / Redump DATs — downloadable in-app)
@@ -165,19 +165,19 @@ Emutastic.exe / rcheevos.dll / .NET runtime DLLs
 
 ### Portable mode
 
-Drop an empty `portable.txt` next to `Emutastic.exe` **or** launch with the `--portable` command-line flag, and **everything** lives in `PortableData\` beside the .exe — config, library database, save states, battery saves, screenshots, recordings, artwork, BIOS files, libretro cores, and any ROMs you import. Move the install folder to a USB stick and run it on any Windows PC; library paths are stored relative to `PortableData\` so drive-letter changes (E:→F:) don't break anything. ROM imports are auto-copied into `PortableData\Roms\<Console>\` so they travel with the USB without setting up a separate library folder. See **[Portable Mode](https://github.com/codingncaffeine/Emutastic/wiki/Portable-Mode)** in the wiki for the full on-disk layout, caveats, and how to revert.
+Drop an empty `portable.txt` next to `Telesto.exe` **or** launch with the `--portable` command-line flag, and **everything** lives in `PortableData\` beside the .exe — config, library database, save states, battery saves, screenshots, recordings, artwork, BIOS files, libretro cores, and any ROMs you import. Move the install folder to a USB stick and run it on any Windows PC; library paths are stored relative to `PortableData\` so drive-letter changes (E:→F:) don't break anything. ROM imports are auto-copied into `PortableData\Roms\<Console>\` so they travel with the USB without setting up a separate library folder. See **[Portable Mode](https://github.com/skonester/telesto/wiki/Portable-Mode)** in the wiki for the full on-disk layout, caveats, and how to revert.
 
 ---
 
 ## Cheats
 
-Per-game cheats from the in-game cog menu or the library detail card's `⋯` menu. Game Genie / GameShark / raw codes depending on system. See **[Cheats](https://github.com/codingncaffeine/Emutastic/wiki/Cheats)** in the wiki for code formats per system, storage paths, and the list of cores where cheats aren't supported.
+Per-game cheats from the in-game cog menu or the library detail card's `⋯` menu. Game Genie / GameShark / raw codes depending on system. See **[Cheats](https://github.com/skonester/telesto/wiki/Cheats)** in the wiki for code formats per system, storage paths, and the list of cores where cheats aren't supported.
 
 ---
 
 ## Wiki
 
-Per-system configuration, known issues, teardown fixes, and technical details are documented in the **[Wiki](https://github.com/codingncaffeine/Emutastic/wiki)**.
+Per-system configuration, known issues, teardown fixes, and technical details are documented in the **[Wiki](https://github.com/skonester/telesto/wiki)**.
 
 ---
 
@@ -198,7 +198,7 @@ dotnet build .\Emutastic.sln -c Release
 
 ### Libretro Cores
 
-Emulation is handled by libretro cores maintained by their upstream authors. Emutastic bundles none of them — the in-app core manager downloads from the libretro build servers on demand. Please support these projects directly.
+Emulation is handled by libretro cores maintained by their upstream authors. Telesto bundles none of them — the in-app core manager downloads from the libretro build servers on demand. Please support these projects directly.
 
 | Core | Upstream author(s) |
 |---|---|

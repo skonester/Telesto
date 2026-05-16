@@ -217,7 +217,7 @@
                     <!-- Sidebar mock -->
                     <Border Grid.Column="0" x:Name="PreviewSidebar" CornerRadius="8,0,0,8">
                         <StackPanel Margin="12,16">
-                            <TextBlock x:Name="PreviewAppTitle" Text="Emutastic" FontSize="13" FontWeight="Bold" Margin="0,0,0,16"/>
+                            <TextBlock x:Name="PreviewAppTitle" Text="Telesto" FontSize="13" FontWeight="Bold" Margin="0,0,0,16"/>
                             <Border x:Name="PreviewNavActive" CornerRadius="4" Padding="8,6" Margin="0,2">
                                 <TextBlock Text="All Games" FontSize="11"/>
                             </Border>

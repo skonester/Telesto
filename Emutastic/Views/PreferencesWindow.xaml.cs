@@ -2614,7 +2614,7 @@ namespace Emutastic.Views
                 try
                 {
                     using var http = new System.Net.Http.HttpClient();
-                    http.DefaultRequestHeaders.Add("User-Agent", "Emutastic");
+                    http.DefaultRequestHeaders.Add("User-Agent", "Telesto");
                     var rel   = await http.GetStringAsync("https://api.github.com/repos/libsdl-org/SDL/releases/latest");
                     var doc   = System.Text.Json.JsonDocument.Parse(rel);
                     var asset = doc.RootElement.GetProperty("assets").EnumerateArray()
@@ -2684,7 +2684,7 @@ namespace Emutastic.Views
                 try
                 {
                     using var http = new System.Net.Http.HttpClient();
-                    http.DefaultRequestHeaders.Add("User-Agent", "Emutastic");
+                    http.DefaultRequestHeaders.Add("User-Agent", "Telesto");
 
                     // BtbN's auto-builds — reliable, always up to date
                     string url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
@@ -2897,7 +2897,7 @@ namespace Emutastic.Views
                     try
                     {
                         using var http = new System.Net.Http.HttpClient();
-                        http.DefaultRequestHeaders.Add("User-Agent", "Emutastic");
+                        http.DefaultRequestHeaders.Add("User-Agent", "Telesto");
                         string url = capturedDirectUrl ?? $"http://redump.org/datfile/{capturedSlug}/";
                         var bytes = await http.GetByteArrayAsync(url);
                         capturedProgress.Value = 90;
@@ -2958,7 +2958,7 @@ namespace Emutastic.Views
                 try
                 {
                     using var http = new System.Net.Http.HttpClient();
-                    http.DefaultRequestHeaders.Add("User-Agent", "Emutastic");
+                    http.DefaultRequestHeaders.Add("User-Agent", "Telesto");
 
                     // Get directory listing from GitHub API
                     string apiUrl = "https://api.github.com/repos/libretro/overlay-borders/contents/1080%20GCE%20Vectrex/Game%20Overlay";
@@ -3842,7 +3842,7 @@ namespace Emutastic.Views
         {
             var dlg = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "Emutastic Theme (*.emutheme)|*.emutheme",
+                Filter = "Telesto Theme (*.emutheme)|*.emutheme",
                 Title = "Import Theme",
             };
 
@@ -4065,9 +4065,9 @@ namespace Emutastic.Views
         // Shows the installed app version, queries GitHub for the latest release,
         // and provides links to the release page + repo. Read-only — no auto-update.
 
-        private const string GitHubRepoUrl = "https://github.com/codingncaffeine/Emutastic";
-        private const string GitHubLatestApiUrl = "https://api.github.com/repos/codingncaffeine/Emutastic/releases/latest";
-        private const string GitHubReleasesUrl = "https://github.com/codingncaffeine/Emutastic/releases";
+        private const string GitHubRepoUrl = "https://github.com/skonester/telesto";
+        private const string GitHubLatestApiUrl = "https://api.github.com/repos/skonester/telesto/releases/latest";
+        private const string GitHubReleasesUrl = "https://github.com/skonester/telesto/releases";
 
         private static readonly System.Net.Http.HttpClient _aboutHttp = CreateAboutHttp();
         private string? _latestReleaseUrl;
@@ -4082,7 +4082,7 @@ namespace Emutastic.Views
                 Timeout = System.Threading.Timeout.InfiniteTimeSpan
             };
             // GitHub API rejects requests without a User-Agent.
-            http.DefaultRequestHeaders.UserAgent.ParseAdd("Emutastic/about-tab");
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("Telesto/about-tab");
             http.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
             return http;
         }

@@ -1287,7 +1287,7 @@
                                         <Run>Replaces the custom macOS-style title bar and window buttons with the standard Windows chrome — including snap layouts and the native minimize, maximize and close buttons.</Run>
                                     </TextBlock>
                                     <TextBlock x:Name="ChromeRestartNote"
-                                               Text="&#x26A0;&#xFE0F;  Takes effect after restarting Emutastic."
+                                               Text="&#x26A0;&#xFE0F;  Takes effect after restarting Telesto."
                                                FontSize="11" Foreground="{DynamicResource WarningBrush}"
                                                Margin="0,6,0,0"
                                                Visibility="Collapsed"/>
@@ -1321,7 +1321,7 @@
                             <TextBlock Text="VIDEO SNAPS" Style="{StaticResource PrefLabel}"/>
                             <Rectangle Height="1" Fill="{DynamicResource BorderNormalBrush}" Margin="0,0,0,16"/>
 
-                            <TextBlock Text="When a game card is opened, Emutastic can play a video preview instead of showing a static screenshot. Choose a provider below."
+                            <TextBlock Text="When a game card is opened, Telesto can play a video preview instead of showing a static screenshot. Choose a provider below."
                                        FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"
                                        TextWrapping="Wrap" Margin="0,0,0,24"/>
 
@@ -1833,7 +1833,7 @@
                             <Rectangle Height="1" Fill="{DynamicResource BorderNormalBrush}" Margin="0,0,0,16"/>
 
                             <!-- App name + tagline -->
-                            <TextBlock Text="Emutastic"
+                            <TextBlock Text="Telesto"
                                        FontSize="24" FontWeight="Bold"
                                        Foreground="{DynamicResource TextPrimaryBrush}"
                                        Margin="0,0,0,4"/>
