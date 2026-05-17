@@ -4,6 +4,7 @@ using Emutastic.Services;
 using Emutastic.Views;
 using LibVLCSharp.Shared;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -306,7 +307,8 @@ namespace Emutastic.Views
             }
 
             bool isSaturn = string.Equals(_game.Console, "Saturn", StringComparison.OrdinalIgnoreCase);
-            bool ymirPreferred = YmirLauncher.IsPreferredFor(_game, App.Configuration);
+            string? preferredYmirCore = YmirLauncher.GetPreferredYmirCore(_game, App.Configuration);
+            bool ymirPreferred = preferredYmirCore != null;
             bool launchYmir = isSaturn
                 && YmirLauncher.IsAvailable()
                 && (ymirPreferred || coreManager.GetCorePathForGame(_game) == null);
@@ -315,7 +317,21 @@ namespace Emutastic.Views
             {
                 try
                 {
-                    YmirLauncher.Launch(_game);
+                    bool useStandalone = YmirLauncher.IsStandaloneCore(preferredYmirCore ?? "");
+                    if (!useStandalone && YmirLauncher.IsEmbeddedAvailable())
+                    {
+                        var emulator = new YmirEmulatorWindow(_game) { Owner = this };
+                        emulator.ShowDialog();
+                    }
+                    else if (YmirLauncher.IsStandaloneAvailable())
+                    {
+                        YmirLauncher.Launch(_game);
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException("No Ymir embedded or standalone runtime was found.");
+                    }
+
                     _db.UpdatePlayCount(_game.Id);
                     _game.PlayCount++;
                     _game.LastPlayed = DateTime.Now;
@@ -335,7 +351,7 @@ namespace Emutastic.Views
             if (ymirPreferred)
             {
                 MessageBox.Show(
-                    "Ymir standalone is selected for Saturn, but ymir-sdl3.exe was not found.",
+                    "Ymir is selected for Saturn, but neither telesto-ymir-core.dll nor ymir-sdl3.exe was found.",
                     "Missing Ymir",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);

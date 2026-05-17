@@ -1,6 +1,7 @@
 # Build output
 bin/
 obj/
+native/**/build*/
 
 # Release artifacts
 Emutastic-v*.zip

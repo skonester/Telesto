@@ -60,6 +60,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\native\ymir-telesto-core\build-release\telesto-ymir-core.dll" Condition="Exists('..\native\ymir-telesto-core\build-release\telesto-ymir-core.dll')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Link>ymircore\telesto-ymir-core.dll</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
     <PackageReference Include="Vortice.Direct3D11" Version="3.6.2" />

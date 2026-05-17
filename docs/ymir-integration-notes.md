@@ -122,6 +122,83 @@ Required surfaces:
 
 This is the right long-term route, but only after we have the exact C API contract.
 
+Upstream Ymir already has the library boundary we need:
+
+- `libs/ymir-core` builds the emulator library target.
+- `ymir::Saturn` is the facade object for reset, IPL loading, disc loading, frame stepping, save states, VDP, SCSP, SMPC input, and configuration.
+- The software renderer exposes an XRGB8888 frame callback.
+- SCSP exposes a stereo sample callback.
+- SMPC peripheral ports can connect Saturn Control Pads and provide reports through callbacks.
+
+The custom local `ymir-core.dll` is not an upstream target, so the safer path is to build our own thin wrapper DLL from upstream source instead of reverse-engineering that DLL.
+
+## Implemented Native Wrapper Scaffold
+
+A native wrapper scaffold now lives at `native/ymir-telesto-core`.
+
+It builds `telesto-ymir-core.dll` by linking against upstream `ymir::ymir-core` and exporting a small C ABI for Telesto:
+
+- Create/destroy context.
+- Set video callback.
+- Set audio callback.
+- Load IPL ROM.
+- Load disc image.
+- Load internal backup RAM image.
+- Set Saturn control pad button masks for ports 1 and 2.
+- Hard/soft reset.
+- Run one emulated frame.
+
+The wrapper intentionally skips Ymir SDL app features: settings windows, update checks, debugger, rewind, MIDI configuration, SDL input, and exotic controller UI.
+
+Expected build flow:
+
+```powershell
+git clone --recurse-submodules https://github.com/StrikerX3/Ymir C:\src\Ymir
+
+cmake -S native\ymir-telesto-core -B native\ymir-telesto-core\build -G Ninja `
+  -DCMAKE_BUILD_TYPE=Release `
+  -DTELESTO_YMIR_SOURCE_DIR=C:\src\Ymir `
+  -DCMAKE_TOOLCHAIN_FILE=C:\src\Ymir\vcpkg\scripts\buildsystems\vcpkg.cmake `
+  -DVCPKG_TARGET_TRIPLET=x64-win-llvm-static-md `
+  -DVCPKG_OVERLAY_TRIPLETS=C:\src\Ymir\vcpkg-triplets `
+  -DVCPKG_INSTALLED_DIR=C:\src\Ymir\vcpkg_installed `
+  -DCMAKE_PREFIX_PATH=C:\src\Ymir\vcpkg_installed\x64-win-llvm-static-md
+
+cmake --build native\ymir-telesto-core\build --config Release --parallel
+```
+
+Working local proof on 2026-05-16:
+
+- Upstream Ymir was cloned to `C:\tmp\Ymir` with submodules.
+- Ymir's vcpkg bootstrap and manifest install completed for `x64-win-llvm-static-md`.
+- `telesto-ymir-core.dll` built successfully from `native/ymir-telesto-core`.
+- The resulting DLL imports release Visual C++ runtime DLLs (`MSVCP140.dll`, `VCRUNTIME140.dll`, and UCRT API set DLLs), not debug runtime DLLs.
+- Export verification showed the intended C ABI: `telesto_ymir_create`, `telesto_ymir_destroy`, `telesto_ymir_last_error`, `telesto_ymir_load_ipl`, `telesto_ymir_load_disc`, `telesto_ymir_load_internal_backup_ram`, `telesto_ymir_insert_backup_ram_cartridge`, `telesto_ymir_reset`, `telesto_ymir_run_frame`, `telesto_ymir_set_video_callback`, `telesto_ymir_set_audio_callback`, and `telesto_ymir_set_control_pad_state`.
+
+The wrapper sets `WITH_LZMA_ASM=OFF` so libchdr does not require `ml64.exe`. That is acceptable for the first casual-user embedded path; it keeps CHD support through the C decoder while avoiding a full Visual Studio assembler requirement.
+
+Telesto now has a managed `YmirNativeCore` loader and a first-pass `YmirEmulatorWindow` that runs the wrapper in a Telesto-owned WPF window. It supports:
+
+- IPL discovery from Telesto's `System` folder or the packaged `ymircore/ipl.bin`.
+- Disc loading through the native wrapper.
+- Internal backup RAM creation/loading through Ymir's backup memory formatter.
+- A per-game 32 Mbit backup RAM cartridge image for titles or BIOS screens that expect cartridge memory.
+- XRGB8888 video callback presentation into a `WriteableBitmap`.
+- Stereo sample playback through Telesto's `AudioPlayer`.
+- Keyboard and controller mapping for the Saturn digital pad.
+- Separate Saturn core choices for `Ymir (embedded experimental)` and `Ymir (standalone fallback)`.
+
+Still intentionally missing from the embedded path:
+
+- Telesto save-state loading/saving.
+- Recording, screenshots, shaders, achievements, and the full pause overlay.
+- Automatic DRAM/ROM cartridge selection for the games that require those cartridge types.
+- Region/frame-rate refinement beyond the first NTSC/PAL guess.
+
+The embedded wrapper now explicitly closes the virtual tray after disc load/reset. That should keep the Saturn BIOS from sitting at the orange startup screen because it believes the drive is open.
+
+Next engineering step: add automatic recommended cartridge selection for DRAM and ROM-cart titles, then move the shared emulator-window chrome/HUD pieces behind a backend-neutral interface so Ymir can reuse more of the regular `EmulatorWindow` experience.
+
 ### 3. Libretro Wrapper, Highest Maintenance
 
 Write or adopt a libretro wrapper around Ymir, then Telesto can keep using `LibretroCore`.
@@ -142,7 +219,7 @@ Use path 1 first to validate the local Ymir build and the Saturn game launch wor
 
 ## Implemented Standalone Path
 
-Telesto now exposes `Ymir (standalone)` as a Saturn core preference. When selected, the game detail Play button launches `ymir-sdl3.exe` with:
+Telesto now exposes `Ymir (standalone fallback)` as a Saturn core preference alongside the embedded experimental core. When selected, the game detail Play button launches `ymir-sdl3.exe` with:
 
 ```text
 --disc "<game path>" --profile "<Telesto data>/YmirProfiles/default"

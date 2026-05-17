@@ -11,14 +11,30 @@ namespace Emutastic.Services
 {
     public static class YmirLauncher
     {
-        public const string CoreId = "ymir_standalone";
-        public const string DisplayName = "Ymir (standalone)";
+        public const string EmbeddedCoreId = "ymir_embedded";
+        public const string StandaloneCoreId = "ymir_standalone";
+        public const string CoreId = StandaloneCoreId;
+        public const string EmbeddedDisplayName = "Ymir (embedded experimental)";
+        public const string StandaloneDisplayName = "Ymir (standalone fallback)";
+        public const string DisplayName = EmbeddedDisplayName;
 
         public static bool IsYmirCore(string coreName)
-            => string.Equals(coreName, CoreId, StringComparison.OrdinalIgnoreCase);
+            => IsEmbeddedCore(coreName) || IsStandaloneCore(coreName);
+
+        public static bool IsEmbeddedCore(string coreName)
+            => string.Equals(coreName, EmbeddedCoreId, StringComparison.OrdinalIgnoreCase);
+
+        public static bool IsStandaloneCore(string coreName)
+            => string.Equals(coreName, StandaloneCoreId, StringComparison.OrdinalIgnoreCase);
 
         public static bool IsAvailable()
+            => YmirNativeCore.IsAvailable() || GetExecutablePath() != null;
+
+        public static bool IsStandaloneAvailable()
             => GetExecutablePath() != null;
+
+        public static bool IsEmbeddedAvailable()
+            => YmirNativeCore.IsAvailable();
 
         public static string? GetExecutablePath()
         {
@@ -33,13 +49,18 @@ namespace Emutastic.Services
         }
 
         public static bool IsPreferredFor(Game game, IConfigurationService? configService)
+            => GetPreferredYmirCore(game, configService) != null;
+
+        public static string? GetPreferredYmirCore(Game game, IConfigurationService? configService)
         {
             if (!string.Equals(game.Console, "Saturn", StringComparison.OrdinalIgnoreCase))
-                return false;
+                return null;
 
             var preferences = configService?.GetCorePreferences();
             return preferences?.PreferredCores.TryGetValue("Saturn", out string? preferred) == true
-                && IsYmirCore(preferred);
+                && IsYmirCore(preferred)
+                    ? preferred
+                    : null;
         }
 
         public static Process Launch(Game game)

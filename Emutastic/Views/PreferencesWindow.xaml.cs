@@ -1896,8 +1896,10 @@ namespace Emutastic.Views
                         .Select(dll => new
                         {
                             Dll = dll,
-                            Path = YmirLauncher.IsYmirCore(dll)
-                                ? YmirLauncher.GetExecutablePath() ?? ""
+                            Path = YmirLauncher.IsEmbeddedCore(dll)
+                                ? YmirNativeCore.GetCorePath() ?? ""
+                                : YmirLauncher.IsStandaloneCore(dll)
+                                    ? YmirLauncher.GetExecutablePath() ?? ""
                                 : System.IO.Path.Combine(coresFolder, dll),
                             Friendly = FormatCoreName(dll),
                             Installed = CoreManager.IsCoreInstalled(coresFolder, dll),
@@ -3210,7 +3212,9 @@ namespace Emutastic.Views
         private static string FormatCoreName(string dllName)
         {
             if (YmirLauncher.IsYmirCore(dllName))
-                return YmirLauncher.DisplayName;
+                return YmirLauncher.IsStandaloneCore(dllName)
+                    ? YmirLauncher.StandaloneDisplayName
+                    : YmirLauncher.EmbeddedDisplayName;
 
             string name = dllName.Replace("_libretro.dll", "", StringComparison.OrdinalIgnoreCase);
             return name switch

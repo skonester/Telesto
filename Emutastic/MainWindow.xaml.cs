@@ -2796,7 +2796,7 @@ namespace Emutastic
             if (Services.YmirLauncher.IsPreferredFor(game, App.Configuration))
             {
                 MessageBox.Show(
-                    "Ymir standalone does not support Telesto save-state loading yet.\n\nUse Play Game to launch this Saturn title with Ymir, or choose a libretro Saturn core to load Telesto save states.",
+                    "Ymir does not support Telesto save-state loading yet.\n\nUse Play Game to launch this Saturn title with Ymir, or choose a libretro Saturn core to load Telesto save states.",
                     "Save State Not Available",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
@@ -2809,7 +2809,7 @@ namespace Emutastic
                 && Services.YmirLauncher.IsAvailable())
             {
                 MessageBox.Show(
-                    "Ymir standalone does not support Telesto save-state loading yet.\n\nUse Play Game to launch this Saturn title with Ymir, or choose a libretro Saturn core to load Telesto save states.",
+                    "Ymir does not support Telesto save-state loading yet.\n\nUse Play Game to launch this Saturn title with Ymir, or choose a libretro Saturn core to load Telesto save states.",
                     "Save State Not Available",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);

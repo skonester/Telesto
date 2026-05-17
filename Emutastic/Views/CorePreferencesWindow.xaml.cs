@@ -182,7 +182,9 @@ namespace Emutastic.Views
         private static string FormatCoreName(string dllName)
         {
             if (YmirLauncher.IsYmirCore(dllName))
-                return YmirLauncher.DisplayName;
+                return YmirLauncher.IsStandaloneCore(dllName)
+                    ? YmirLauncher.StandaloneDisplayName
+                    : YmirLauncher.EmbeddedDisplayName;
 
             // Remove _libretro.dll suffix and format nicely
             string name = dllName.Replace("_libretro.dll", "", StringComparison.OrdinalIgnoreCase);

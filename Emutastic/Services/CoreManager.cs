@@ -44,7 +44,8 @@ namespace Emutastic.Services
             // Kronos kept as an alternative for users who need its OpenGL HW
             // upscaling or its Panzer Dragoon Saga / VF3tb fixes.
             { "Saturn",      new[] { "mednafen_saturn_libretro.dll",
-                                     YmirLauncher.CoreId,
+                                     YmirLauncher.EmbeddedCoreId,
+                                     YmirLauncher.StandaloneCoreId,
                                      "kronos_libretro.dll",
                                      "yabause_libretro.dll"             }},
             { "SMS",         new[] { "genesis_plus_gx_libretro.dll",
@@ -229,8 +230,10 @@ namespace Emutastic.Services
         }
 
         public static bool IsCoreInstalled(string coresFolder, string coreName)
-            => YmirLauncher.IsYmirCore(coreName)
-                ? YmirLauncher.IsAvailable()
+            => YmirLauncher.IsEmbeddedCore(coreName)
+                ? YmirLauncher.IsEmbeddedAvailable()
+                : YmirLauncher.IsStandaloneCore(coreName)
+                    ? YmirLauncher.IsStandaloneAvailable()
                 : File.Exists(Path.Combine(coresFolder, coreName));
 
         public string? GetCorePath(string console)
