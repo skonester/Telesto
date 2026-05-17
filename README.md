@@ -4,7 +4,10 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-A multi-system emulator frontend for Windows built with WPF and .NET 8, inspired by [OpenEmu](https://openemu.org/) on macOS. Games are organized by console in a clean library interface. Emulation is handled by [libretro](https://www.libretro.com/) cores loaded at runtime — no cores are bundled.
+**Telesto** is a premium, state-of-the-art multi-system emulator frontend for Windows built with WPF and .NET 8, inspired by the elegant, clean interface of [OpenEmu](https://openemu.org/) on macOS.
+
+### 🪐 Behind the Name
+Telesto is proudly named after a real, co-orbital moon of Saturn, and as a tribute to the iconic woman (the memorable character played by Hannah Sim) from the famous Sega Saturn commercials. Embracing its namesake, Telesto's core mission is to bring the absolute best **2026 Sega Saturn emulation solutions** directly to your desktop via a bespoke, high-performance native integration—all while maintaining its highly compatible, mature **legacy libretro backend** for a vast catalog of classic systems.
 
 **[Grab the latest release](https://github.com/skonester/telesto/releases) directly.**
 
@@ -46,7 +49,7 @@ A multi-system emulator frontend for Windows built with WPF and .NET 8, inspired
 | Genesis / Mega Drive | Genesis | genesis_plus_gx → picodrive | No |
 | Sega CD / Mega CD | SegaCD | genesis_plus_gx | Region BIOS |
 | Sega 32X | Sega32X | picodrive | No |
-| Sega Saturn | Saturn | mednafen_saturn → kronos → yabause | Region BIOS |
+| Sega Saturn | Saturn | ymir (embedded) → ymir (standalone) → mednafen_saturn → kronos → yabause | Region BIOS |
 | Master System | SMS | genesis_plus_gx → picodrive | No |
 | Game Gear | GameGear | genesis_plus_gx | No |
 | SG-1000 | SG1000 | genesis_plus_gx | No |
@@ -80,7 +83,7 @@ Place BIOS files in `%AppData%\Telesto\System\` (or `PortableData\System\` next 
 
 **Sega CD** — `bios_CD_U.bin` (USA), `bios_CD_E.bin` (Europe), `bios_CD_J.bin` (Japan)
 
-**Sega Saturn** — Kronos: `system\kronos\saturn_bios.bin`. Beetle Saturn: `sega_101.bin` (JP v1.00), `mpr-17933.bin` (JP v1.01), `mpr-17941.bin` (USA/EU v1.01). Note: `mpr-17933.bin` is a Japan BIOS despite being commonly mislabeled as USA/EU.
+**Sega Saturn** — Ymir (embedded & standalone) automatically detects and copies your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) from Telesto's central `System` directory directly into the emulator profile's `roms/ipl` subdirectory on launch. For Beetle Saturn / Kronos cores: Kronos expects `system\kronos\saturn_bios.bin`, while Beetle Saturn expects `sega_101.bin` (JP v1.00), `mpr-17933.bin` (JP v1.01), or `mpr-17941.bin` (USA/EU v1.01). Note: `mpr-17933.bin` is a Japan BIOS despite being commonly mislabeled as USA/EU.
 
 **PlayStation** — USA: `scph5501.bin`, `scph1001.bin`, `scph7001.bin`. Europe: `scph5502.bin`. Japan: `scph5500.bin`
 
@@ -101,6 +104,37 @@ Drag and drop ROMs onto the library or use **Import ROMs**. The app detects the 
 **Multi-disc games** (Final Fantasy VII, Metal Gear Solid, etc.) are auto-bundled into a single library entry — drop a folder containing the disc files (`.cue`/`.bin` or `.chd`) and Telesto writes an `.m3u` playlist alongside them so the game shows up once, not three times. Hand-authored `.m3u` files in the folder are honored as-is.
 
 **Important:** Download DAT files in **Preferences → Cores / Extras** before importing. Without them, disc images and some cartridge ROMs may be assigned to the wrong system during import.
+
+---
+
+## Sega Saturn Emulation: Ymir Integration
+
+Telesto is built to deliver the absolute best Sega Saturn emulation experience in 2026, combining the high-accuracy of the **Ymir** emulation core (developed by StrikerX3) with Telesto's elegant, high-performance UI. We offer two distinct, robust integration paths:
+
+### 🪐 Embedded/In-Process Core (`ymir_embedded`)
+For an incredibly premium, seamless gameplay experience, Telesto hosts the Ymir emulator directly in-process via a custom-built native C++ wrapper (`telesto-ymir-core.dll`) and a managed P/Invoke layer (`YmirNativeCore`).
+*   **Direct Rendering:** Software-rendered XRGB8888 frames are captured via native callbacks and presented directly onto Telesto's `WriteableBitmap` rendering surface with zero overhead.
+*   **Integrated Audio:** Low-latency stereo sample callbacks stream audio directly into Telesto's standard `AudioPlayer` queue.
+*   **Unified Controls:** Native button mapping maps Telesto's user-configured input profiles directly to Ymir's internal Saturn digital pad button masks.
+*   **Saves & Backups:** Automatic creation, formatting, and seeding of internal backup RAM as well as a 32 Mbit backup RAM cartridge image.
+*   **No Open Trays:** Automatically handles closing the virtual disc tray after boot to bypass standard CD player BIOS screens.
+
+### 🚀 Standalone Fallback (`ymir_standalone`)
+A robust alternative that launches the standalone `ymir-sdl3.exe` external emulator while keeping it fully aligned with Telesto.
+*   **Profile Seeding:** Telesto automatically provisions and maintains a clean local Ymir profile directory under `YmirProfiles/default`, disabling automated update checks and enabling per-game internal backup RAM.
+*   **BIOS Synchronization:** On launch, Telesto checks for your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) in your central `System` directory and copies them directly into the standalone profile's `roms/ipl` subdirectory.
+
+---
+
+## What's New in Telesto
+
+Our project has evolved rapidly! Here are the core features, performance overhauls, and quality-of-life updates recently added to Telesto:
+
+*   **Arcade & MAME 2003-Plus Support:** Fully added support for the high-performance MAME 2003-Plus libretro arcade core, backed by an all-new audit framework to verify arcade ROM set compatibility.
+*   **GameCube Multi-Disc Auto-Bundling:** When importing folders containing multi-disc GameCube games, Telesto automatically bundles them into a single, clean `.m3u` playlist in your library.
+*   **Polished Theme Engine:** Expanded our styling tokens with `LibrarySelection` and `LibraryFocus` colors. The library card selection ring now hugs the exact contours of 3D game box art.
+*   **Performance Overhaul:** Fully optimized preferences caching and database read/write speeds, resulting in instant, stutter-free settings transitions.
+*   **Smart Metadata & Screenshot Captures:** Added "once-and-done" metadata scraping, smarter screenshot directory handling, and a fully configurable global emulator hotkey.
 
 ---
 
@@ -232,6 +266,7 @@ Emulation is handled by libretro cores maintained by their upstream authors. Tel
 | VecX | Valavan Manohararajah (upstream) / libretro maintenance |
 | Virtual Jaguar | Virtual Jaguar team |
 | Yabause | Yabause team |
+| Ymir | StrikerX3 (high-accuracy Sega Saturn emulation core) |
 
 ### Controller Illustrations
 Artwork from [OpenEmuControllerArt](https://github.com/kodi-game/OpenEmuControllerArt) (BSD 3-Clause). Not affiliated with or endorsed by OpenEmu.
