@@ -192,7 +192,7 @@ Telesto hosts the Ymir emulator in-process via a native C++ wrapper (`telesto-ym
 *   **Saves & Backups:** Automatic creation, formatting, and seeding of internal backup RAM as well as a 32 Mbit backup RAM cartridge image.
 *   **No Open Trays:** Automatically handles closing the virtual disc tray after boot to bypass standard CD player BIOS screens.
 
-### 🚀 Standalone Fallback (`ymir_standalone`)
+### Standalone Fallback (`ymir_standalone`)
 Launches the standalone `ymir-sdl3.exe` external emulator while keeping it aligned with Telesto.
 *   **Profile Seeding:** Telesto automatically provisions and maintains a clean local Ymir profile directory under `YmirProfiles/default`, disabling automated update checks and enabling per-game internal backup RAM.
 *   **BIOS Synchronization:** On launch, Telesto checks for your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) in your central `System` directory and copies them directly into the standalone profile's `roms/ipl` subdirectory.
@@ -260,18 +260,6 @@ Telesto.exe / rcheevos.dll / .NET runtime DLLs
 ### Portable mode
 
 Drop an empty `portable.txt` next to `Telesto.exe` **or** launch with the `--portable` command-line flag, and **everything** lives in `PortableData\` beside the .exe — config, library database, save states, battery saves, screenshots, recordings, artwork, BIOS files, libretro cores, and any ROMs you import. Move the install folder to a USB stick and run it on any Windows PC; library paths are stored relative to `PortableData\` so drive-letter changes (E:→F:) don't break anything. ROM imports are auto-copied into `PortableData\Roms\<Console>\` so they travel with the USB without setting up a separate library folder. See **[Portable Mode](https://github.com/skonester/telesto/wiki/Portable-Mode)** in the wiki for the full on-disk layout, caveats, and how to revert.
-
----
-
-## Cheats
-
-Per-game cheats from the in-game cog menu or the library detail card's `⋯` menu. Game Genie / GameShark / raw codes depending on system. See **[Cheats](https://github.com/skonester/telesto/wiki/Cheats)** in the wiki for code formats per system, storage paths, and the list of cores where cheats aren't supported.
-
----
-
-## Wiki
-
-Per-system configuration, known issues, teardown fixes, and technical details are documented in the **[Wiki](https://github.com/skonester/telesto/wiki)**.
 
 ---
 
