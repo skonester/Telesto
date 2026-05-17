@@ -5,7 +5,15 @@
 [![GitHub Stars](https://img.shields.io/github/stars/skonester/telesto.svg?style=social)](https://github.com/skonester/telesto/stargazers)
 [![GitHub Contributors](https://img.shields.io/github/contributors/skonester/telesto.svg)](https://github.com/skonester/telesto/graphs/contributors)
 
-**Telesto** is a modern multi-system emulator frontend for Windows, inspired by OpenEmu on macOS. Named after Saturn's real moon and the actress from the iconic Sega Saturn commercials, Telesto orbits around the bigger projects in 2026 emulation—providing a sleek, unified interface for all your retro gaming needs.
+**Telesto** is a modern multi-system libretro emulator frontend for Windows, inspired originally by OpenEmu on macOS.
+
+ Named after Saturn's real moon and also the name I have  given the character from the iconic Sega Saturn commercials, Telesto itself orbits around interesting projects in 2026 emulation while using Emustatic as home planet.
+ 
+ Telesto provides a sleek, unified interface for all your retro gaming needs under one easy to understand house. Built for people just want to pick up and start gaming easily.
+ 
+ Telesto would not exist without the strong work of Emustastic bringing OpenEmu over to Windows. 
+
+
 
 ![Telesto Banner](Emutastic/Assets/banners%20and%20icons/emutastic-banner-scaled.png)
 
@@ -13,7 +21,7 @@
 
 - **34+ emulated systems** across 11 manufacturers with automatic core selection.
 
-- **Integrated Sega Saturn emulation from fork** via the Ymir core (embedded or standalone).
+- **Integrated Sega Saturn emulation from fork** via the Ymir core (embedded or standalone). We want to bring more eyes to the ymir project.
 
 ## Requirements
 
