@@ -1,17 +1,15 @@
-#  Telesto
+# Telesto <img src="GPL3.png" align="right" width="136" height="68" />
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![GitHub Contributors](https://img.shields.io/github/contributors/skonester/telesto.svg)](https://github.com/skonester/telesto/graphs/contributors)
 
 **Telesto** is a modern multi-system libretro emulator frontend for Windows, inspired originally by OpenEmu on macOS.
 
- Named after the planet Saturn's real moon and also the name I have affecionately given the character from the iconic Sega Saturn commercials, Telesto itself orbits around interesting projects in 2026 emulation while using Emutastic as home planet.
- 
- Telesto provides a sleek, unified interface for all your retro gaming needs under one easy to understand house. Built for people just want to pick up and start gaming easily.
- 
- Telesto would not exist without the strong work of Emustastic bringing OpenEmu over to Windows. 
+Named after the planet Saturn's real moon and also the name I have affecionately given the character from the iconic Sega Saturn commercials, Telesto itself orbits around interesting projects in 2026 emulation while using Emutastic as home planet.
 
+Telesto provides a sleek, unified interface for all your retro gaming needs under one easy to understand house. Built for people just want to pick up and start gaming easily.
 
+Telesto would not exist without the strong work of Emustastic bringing OpenEmu over to Windows.
 
 ![Telesto Banner](Emutastic/Assets/banners%20and%20icons/emutastic-banner-scaled.png)
 
@@ -37,42 +35,42 @@
 
 Telesto supports **34 systems across 11 manufacturers** with automatic core selection and intelligent fallback.
 
-| System | Tag | Core (priority order) | BIOS Required |
-|--------|-----|----------------------|---------------|
-| NES | NES | nestopia → quicknes → fceumm | No |
-| Famicom Disk System | FDS | nestopia | `disksys.rom` |
-| SNES | SNES | snes9x → bsnes | No |
-| Nintendo 64 | N64 | parallel_n64 → mupen64plus_next | No |
-| GameCube | GameCube | dolphin | No |
-| Game Boy | GB | mgba → gambatte → sameboy | No |
-| Game Boy Color | GBC | mgba → gambatte → sameboy | No |
-| Game Boy Advance | GBA | mgba | Optional |
-| Nintendo 3DS | 3DS | azahar | No |
-| Nintendo DS | NDS | desmume → melonds | No |
-| Virtual Boy | VirtualBoy | mednafen_vb | No |
-| Genesis / Mega Drive | Genesis | genesis_plus_gx → picodrive | No |
-| Sega CD / Mega CD | SegaCD | genesis_plus_gx | Region BIOS |
-| Sega 32X | Sega32X | picodrive | No |
-| Sega Saturn | Saturn | ymir (embedded) → ymir (standalone) → mednafen_saturn → kronos → yabause | Region BIOS |
-| Master System | SMS | genesis_plus_gx → picodrive | No |
-| Game Gear | GameGear | genesis_plus_gx | No |
-| SG-1000 | SG1000 | genesis_plus_gx | No |
-| Dreamcast | Dreamcast | flycast | No |
-| PlayStation | PS1 | mednafen_psx_hw → mednafen_psx | Region BIOS |
-| PSP | PSP | ppsspp | No |
-| TurboGrafx-16 | TG16 | mednafen_pce → mednafen_pce_fast | No |
-| TurboGrafx-CD | TGCD | mednafen_pce → mednafen_pce_fast | `syscard3.pce` |
-| Neo Geo Pocket | NGP | mednafen_ngp | No |
-| Neo Geo Pocket Color | NGPC | mednafen_ngp | No |
-| Neo Geo | NeoGeo | geolith | `neogeo.zip` + `aes.zip` |
-| Arcade | Arcade | fbneo | No |
-| Atari 2600 | Atari2600 | stella | No |
-| Atari 7800 | Atari7800 | prosystem | No |
-| Atari Jaguar | Jaguar | virtualjaguar | No |
-| ColecoVision | ColecoVision | gearcoleco → bluemsx | No |
-| Vectrex | Vectrex | vecx | No |
-| 3DO | 3DO | opera | `panafz10.bin` |
-| Philips CD-i | CDi | same_cdi | No |
+| System               | Tag          | Core (priority order)                                                    | BIOS Required            |
+| -------------------- | ------------ | ------------------------------------------------------------------------ | ------------------------ |
+| NES                  | NES          | nestopia → quicknes → fceumm                                             | No                       |
+| Famicom Disk System  | FDS          | nestopia                                                                 | `disksys.rom`            |
+| SNES                 | SNES         | snes9x → bsnes                                                           | No                       |
+| Nintendo 64          | N64          | parallel_n64 → mupen64plus_next                                          | No                       |
+| GameCube             | GameCube     | dolphin                                                                  | No                       |
+| Game Boy             | GB           | mgba → gambatte → sameboy                                                | No                       |
+| Game Boy Color       | GBC          | mgba → gambatte → sameboy                                                | No                       |
+| Game Boy Advance     | GBA          | mgba                                                                     | Optional                 |
+| Nintendo 3DS         | 3DS          | azahar                                                                   | No                       |
+| Nintendo DS          | NDS          | desmume → melonds                                                        | No                       |
+| Virtual Boy          | VirtualBoy   | mednafen_vb                                                              | No                       |
+| Genesis / Mega Drive | Genesis      | genesis_plus_gx → picodrive                                              | No                       |
+| Sega CD / Mega CD    | SegaCD       | genesis_plus_gx                                                          | Region BIOS              |
+| Sega 32X             | Sega32X      | picodrive                                                                | No                       |
+| Sega Saturn          | Saturn       | ymir (embedded) → ymir (standalone) → mednafen_saturn → kronos → yabause | Region BIOS              |
+| Master System        | SMS          | genesis_plus_gx → picodrive                                              | No                       |
+| Game Gear            | GameGear     | genesis_plus_gx                                                          | No                       |
+| SG-1000              | SG1000       | genesis_plus_gx                                                          | No                       |
+| Dreamcast            | Dreamcast    | flycast                                                                  | No                       |
+| PlayStation          | PS1          | mednafen_psx_hw → mednafen_psx                                           | Region BIOS              |
+| PSP                  | PSP          | ppsspp                                                                   | No                       |
+| TurboGrafx-16        | TG16         | mednafen_pce → mednafen_pce_fast                                         | No                       |
+| TurboGrafx-CD        | TGCD         | mednafen_pce → mednafen_pce_fast                                         | `syscard3.pce`           |
+| Neo Geo Pocket       | NGP          | mednafen_ngp                                                             | No                       |
+| Neo Geo Pocket Color | NGPC         | mednafen_ngp                                                             | No                       |
+| Neo Geo              | NeoGeo       | geolith                                                                  | `neogeo.zip` + `aes.zip` |
+| Arcade               | Arcade       | fbneo                                                                    | No                       |
+| Atari 2600           | Atari2600    | stella                                                                   | No                       |
+| Atari 7800           | Atari7800    | prosystem                                                                | No                       |
+| Atari Jaguar         | Jaguar       | virtualjaguar                                                            | No                       |
+| ColecoVision         | ColecoVision | gearcoleco → bluemsx                                                     | No                       |
+| Vectrex              | Vectrex      | vecx                                                                     | No                       |
+| 3DO                  | 3DO          | opera                                                                    | `panafz10.bin`           |
+| Philips CD-i         | CDi          | same_cdi                                                                 | No                       |
 
 ## 📁 BIOS Files
 
@@ -109,6 +107,7 @@ Telesto makes importing your ROM collection simple and intelligent:
 Telesto features deep integration with the Ymir Saturn emulator core:
 
 ### 🪐 Embedded/In-Process Core (`ymir_embedded`)
+
 - **Direct Rendering:** Software-rendered frames captured via native callbacks
 - **Integrated Audio:** Stereo sample callbacks stream directly into Telesto's audio player
 - **Unified Controls:** Native button mapping to Ymir's Saturn digital pad button masks
@@ -116,39 +115,45 @@ Telesto features deep integration with the Ymir Saturn emulator core:
 - **No Open Trays:** Automatically handles virtual disc tray after boot
 
 ### Standalone Fallback (`ymir_standalone`)
+
 - **Profile Seeding:** Clean local Ymir profile with updates disabled
 - **BIOS Synchronization:** Automatic copying of IPL BIOS files to standalone profile
-
 
 ## Features
 
 ### Themes
+
 - Four built-in themes: **Dark** (default), **Light**, **OLED Black**, **Midnight Blue**
 - Full visual editor with 44 color tokens and live preview
 - Custom background images with zoom, pan, and tile controls
 - Export/import themes as `.emutheme` files
 
 ### Controllers
+
 - XInput button polling during gameplay
 - SDL3 device name detection for hundreds of controllers
 - Per-controller button mapping in **Preferences → Input**
 - Falls back to generic names if `SDL3.dll` is absent
 
 ### RetroAchievements
+
 - Earn achievements while playing via [RetroAchievements](https://retroachievements.org/)
 - Enable in **Preferences → Achievements** with your RA username and password
 - Achievements appear as toast notifications during gameplay
 
 ### About & Updates
+
 - **Preferences → About** shows version, build date, and credits
 - Automatic GitHub release checking with manual download option
 - Notification-only — no auto-installer, no telemetry
 
 ### Core Options
+
 - Per-core settings (internal resolution, graphics plugins, etc.)
 - Access in **Preferences → Core Options**
 
 ### Disk Swapping (FDS, PS1, Saturn, Sega CD)
+
 - Press **L3 + Start** in-game to flip between discs/sides
 - Rebindable to any two-button chord in **Preferences → Controls → Disk Swap**
 - Status bar shows new disc number on each swap
@@ -185,19 +190,24 @@ Drag and drop ROMs onto the library or use **Import ROMs**. The app detects the 
 Telesto supports Sega Saturn emulation through the **Ymir** core (developed by StrikerX3). We offer two integration paths:
 
 ### Embedded/In-Process Core (`ymir_embedded`)
+
 Telesto hosts the Ymir emulator in-process via a native C++ wrapper (`telesto-ymir-core.dll`) and a managed P/Invoke layer (`YmirNativeCore`).
-*   **Direct Rendering:** Software-rendered XRGB8888 frames are captured via native callbacks and presented directly onto Telesto's `WriteableBitmap` rendering surface.
-*   **Integrated Audio:** Stereo sample callbacks stream audio directly into Telesto's `AudioPlayer` queue.
-*   **Unified Controls:** Native button mapping maps Telesto's user-configured input profiles directly to Ymir's internal Saturn digital pad button masks.
-*   **Saves & Backups:** Automatic creation, formatting, and seeding of internal backup RAM as well as a 32 Mbit backup RAM cartridge image.
-*   **No Open Trays:** Automatically handles closing the virtual disc tray after boot to bypass standard CD player BIOS screens.
+
+- **Direct Rendering:** Software-rendered XRGB8888 frames are captured via native callbacks and presented directly onto Telesto's `WriteableBitmap` rendering surface.
+- **Integrated Audio:** Stereo sample callbacks stream audio directly into Telesto's `AudioPlayer` queue.
+- **Unified Controls:** Native button mapping maps Telesto's user-configured input profiles directly to Ymir's internal Saturn digital pad button masks.
+- **Saves & Backups:** Automatic creation, formatting, and seeding of internal backup RAM as well as a 32 Mbit backup RAM cartridge image.
+- **No Open Trays:** Automatically handles closing the virtual disc tray after boot to bypass standard CD player BIOS screens.
 
 ### Standalone Fallback (`ymir_standalone`)
+
 Launches the standalone `ymir-sdl3.exe` external emulator while keeping it aligned with Telesto.
-*   **Profile Seeding:** Telesto automatically provisions and maintains a clean local Ymir profile directory under `YmirProfiles/default`, disabling automated update checks and enabling per-game internal backup RAM.
-*   **BIOS Synchronization:** On launch, Telesto checks for your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) in your central `System` directory and copies them directly into the standalone profile's `roms/ipl` subdirectory.
+
+- **Profile Seeding:** Telesto automatically provisions and maintains a clean local Ymir profile directory under `YmirProfiles/default`, disabling automated update checks and enabling per-game internal backup RAM.
+- **BIOS Synchronization:** On launch, Telesto checks for your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) in your central `System` directory and copies them directly into the standalone profile's `roms/ipl` subdirectory.
 
 ---
+
 ## Features
 
 <details>
@@ -282,49 +292,50 @@ dotnet build .\Emutastic.sln -c Release
 
 Emulation is handled by libretro cores maintained by their upstream authors. Telesto bundles none of them — the in-app core manager downloads from the libretro build servers on demand. Please support these projects directly.
 
-| Core | Upstream author(s) |
-|---|---|
-| Azahar | Azahar team (successor to Citra / Lime3DS) |
-| Beetle PSX / Saturn / PCE / VB / NGP | Mednafen team (Ryphecha) |
-| blueMSX | blueMSX team (Daniel Vik and contributors) |
-| bsnes | byuu / near and contributors |
-| DeSmuME | DeSmuME team |
-| Dolphin | Dolphin team |
-| FBNeo (FinalBurn Neo) | FBNeo team |
-| FCEUmm | FCEUmm team |
-| Flycast | flyinghead and contributors |
-| Gambatte | Sindre Aamås (sinamas) |
-| Gearcoleco | Ignacio Sánchez (drhelius) |
-| Genesis Plus GX | Eke-Eke |
-| Geolith | R. Danbrook (rdanbrook) |
-| Kronos | Kronos team |
-| melonDS | Arisotura |
-| mGBA | Vicki Pfau (endrift) |
-| Mupen64Plus-Next | libretro team |
-| Nestopia UE | Nestopia UE team |
-| Opera | libretro team (3DO) |
-| ParaLLEl-N64 | libretro team (Themaister and contributors) |
-| Picodrive | notaz |
-| PPSSPP | Henrik Rydgård and contributors |
-| ProSystem | Greg Stanton (upstream) / libretro maintenance |
-| QuickNES | Shay Green (blargg) |
-| SAME CDi | CDi community (MAME derivative) |
-| Snes9x | Snes9x team |
-| Stella | Stella team |
-| VecX | Valavan Manohararajah (upstream) / libretro maintenance |
-| Virtual Jaguar | Virtual Jaguar team |
-| Yabause | Yabause team |
-| Ymir | StrikerX3 (high-accuracy Sega Saturn emulation core) |
+| Core                                 | Upstream author(s)                                      |
+| ------------------------------------ | ------------------------------------------------------- |
+| Azahar                               | Azahar team (successor to Citra / Lime3DS)              |
+| Beetle PSX / Saturn / PCE / VB / NGP | Mednafen team (Ryphecha)                                |
+| blueMSX                              | blueMSX team (Daniel Vik and contributors)              |
+| bsnes                                | byuu / near and contributors                            |
+| DeSmuME                              | DeSmuME team                                            |
+| Dolphin                              | Dolphin team                                            |
+| FBNeo (FinalBurn Neo)                | FBNeo team                                              |
+| FCEUmm                               | FCEUmm team                                             |
+| Flycast                              | flyinghead and contributors                             |
+| Gambatte                             | Sindre Aamås (sinamas)                                  |
+| Gearcoleco                           | Ignacio Sánchez (drhelius)                              |
+| Genesis Plus GX                      | Eke-Eke                                                 |
+| Geolith                              | R. Danbrook (rdanbrook)                                 |
+| Kronos                               | Kronos team                                             |
+| melonDS                              | Arisotura                                               |
+| mGBA                                 | Vicki Pfau (endrift)                                    |
+| Mupen64Plus-Next                     | libretro team                                           |
+| Nestopia UE                          | Nestopia UE team                                        |
+| Opera                                | libretro team (3DO)                                     |
+| ParaLLEl-N64                         | libretro team (Themaister and contributors)             |
+| Picodrive                            | notaz                                                   |
+| PPSSPP                               | Henrik Rydgård and contributors                         |
+| ProSystem                            | Greg Stanton (upstream) / libretro maintenance          |
+| QuickNES                             | Shay Green (blargg)                                     |
+| SAME CDi                             | CDi community (MAME derivative)                         |
+| Snes9x                               | Snes9x team                                             |
+| Stella                               | Stella team                                             |
+| VecX                                 | Valavan Manohararajah (upstream) / libretro maintenance |
+| Virtual Jaguar                       | Virtual Jaguar team                                     |
+| Yabause                              | Yabause team                                            |
+| Ymir                                 | StrikerX3 (high-accuracy Sega Saturn emulation core)    |
 
 ### Controller Illustrations
+
 Artwork from [OpenEmuControllerArt](https://github.com/kodi-game/OpenEmuControllerArt) (BSD 3-Clause). Not affiliated with or endorsed by OpenEmu.
 
-| Artist | Controllers |
-|---|---|
-| **David McLeod** ([@Mucx](https://twitter.com/Mucx/)) | 32X, FDS, GB, GBA, Game Gear, SMS, NES, Sega CD, Genesis, SNES |
+| Artist                                                              | Controllers                                                                          |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **David McLeod** ([@Mucx](https://twitter.com/Mucx/))               | 32X, FDS, GB, GBA, Game Gear, SMS, NES, Sega CD, Genesis, SNES                       |
 | **Ricky Romero** ([@RickyRomero](https://twitter.com/RickyRomero/)) | Atari 2600/5200, N64, NDS, Odyssey², PS1, PSP, Saturn, SG-1000, Vectrex, Virtual Boy |
-| **Craig Erskine** ([@qrayg](https://twitter.com/qrayg/)) | GameCube, Neo Geo Pocket, PC Engine / TG16 |
-| **Salvo Zummo** / **David Everly** / **Kate Schroeder** | Atari 7800, 3DO, ColecoVision |
+| **Craig Erskine** ([@qrayg](https://twitter.com/qrayg/))            | GameCube, Neo Geo Pocket, PC Engine / TG16                                           |
+| **Salvo Zummo** / **David Everly** / **Kate Schroeder**             | Atari 7800, 3DO, ColecoVision                                                        |
 
 Inspired by [OpenEmu](https://openemu.org/) for macOS.
 
