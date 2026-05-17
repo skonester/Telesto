@@ -1,13 +1,11 @@
-# 🚀 Telesto
+#  Telesto
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub Release](https://img.shields.io/github/releases/skonester/telesto.svg)](https://github.com/skonester/telesto/releases/latest)
-[![GitHub Stars](https://img.shields.io/github/stars/skonester/telesto.svg?style=social)](https://github.com/skonester/telesto/stargazers)
 [![GitHub Contributors](https://img.shields.io/github/contributors/skonester/telesto.svg)](https://github.com/skonester/telesto/graphs/contributors)
 
 **Telesto** is a modern multi-system libretro emulator frontend for Windows, inspired originally by OpenEmu on macOS.
 
- Named after Saturn's real moon and also the name I have  given the character from the iconic Sega Saturn commercials, Telesto itself orbits around interesting projects in 2026 emulation while using Emustatic as home planet.
+ Named after the planet Saturn's real moon and also the name I have affecionately given the character from the iconic Sega Saturn commercials, Telesto itself orbits around interesting projects in 2026 emulation while using Emutastic as home planet.
  
  Telesto provides a sleek, unified interface for all your retro gaming needs under one easy to understand house. Built for people just want to pick up and start gaming easily.
  
