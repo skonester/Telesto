@@ -473,6 +473,9 @@ namespace Emutastic.Views
                 win.ShowDialog();
             };
 
+            var playYmirStandalone = new MenuItem { Header = "Play with Ymir standalone" };
+            playYmirStandalone.Click += (_, _) => LaunchYmirStandalone();
+
             var remove = new MenuItem { Header = "Remove from Library" };
             remove.Click += (_, _) =>
             {
@@ -491,6 +494,12 @@ namespace Emutastic.Views
             menu.Items.Add(showInExplorer);
             menu.Items.Add(rename);
 
+            if (string.Equals(_game.Console, "Saturn", StringComparison.OrdinalIgnoreCase)
+                && YmirLauncher.IsStandaloneAvailable())
+            {
+                menu.Items.Add(playYmirStandalone);
+            }
+
             // Show the Cheats entry only when this console actually has a known core
             // AND that core isn't a known cheat-stub. Unknown consoles (no core in the
             // map) hide the entry — there's nothing to apply cheats against.
@@ -507,6 +516,26 @@ namespace Emutastic.Views
             menu.PlacementTarget = (UIElement)sender;
             menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
             menu.IsOpen = true;
+        }
+
+        private void LaunchYmirStandalone()
+        {
+            try
+            {
+                YmirLauncher.Launch(_game);
+                _db.UpdatePlayCount(_game.Id);
+                _game.PlayCount++;
+                _game.LastPlayed = DateTime.Now;
+                if (IsVisible) RefreshStats();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Failed to launch Ymir standalone:\n\n{ex.Message}",
+                    "Launch Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -126,7 +126,7 @@ Upstream Ymir already has the library boundary we need:
 
 - `libs/ymir-core` builds the emulator library target.
 - `ymir::Saturn` is the facade object for reset, IPL loading, disc loading, frame stepping, save states, VDP, SCSP, SMPC input, and configuration.
-- The software renderer exposes an XRGB8888 frame callback.
+- The software renderer exposes a 32-bit frame callback. Ymir's SDL frontend uploads it to an `SDL_PIXELFORMAT_XBGR8888` texture; Telesto converts the channel order before writing to WPF `Bgra32`.
 - SCSP exposes a stereo sample callback.
 - SMPC peripheral ports can connect Saturn Control Pads and provide reports through callbacks.
 
@@ -183,7 +183,7 @@ Telesto now has a managed `YmirNativeCore` loader and a first-pass `YmirEmulator
 - Disc loading through the native wrapper.
 - Internal backup RAM creation/loading through Ymir's backup memory formatter.
 - A per-game 32 Mbit backup RAM cartridge image for titles or BIOS screens that expect cartridge memory.
-- XRGB8888 video callback presentation into a `WriteableBitmap`.
+- Software video callback presentation into a WPF `WriteableBitmap`, with red/blue channel conversion for the embedded path.
 - Stereo sample playback through Telesto's `AudioPlayer`.
 - Keyboard and controller mapping for the Saturn digital pad.
 - Separate Saturn core choices for `Ymir (embedded experimental)` and `Ymir (standalone fallback)`.
@@ -225,7 +225,9 @@ Telesto now exposes `Ymir (standalone fallback)` as a Saturn core preference alo
 --disc "<game path>" --profile "<Telesto data>/YmirProfiles/default"
 ```
 
-The standalone payload is copied to `ymircore/` in build and publish output. This route uses `ymir-sdl3.exe` only; it deliberately does not copy or load the debug-built `ymir-core.dll`.
+The standalone payload is copied to `ymircore/` in build and publish output. This route uses `ymir-sdl3.exe` or `ymir.exe`; it deliberately does not copy or load the debug-built `ymir-core.dll`.
+
+The game detail overflow menu also exposes `Play with Ymir standalone` for Saturn games when `ymir-sdl3.exe` or `ymir.exe` is available, so users can bypass the embedded experimental wrapper without changing their global core preference.
 
 On launch, Telesto seeds and maintains a Ymir profile at `<Telesto data>/YmirProfiles/default`:
 

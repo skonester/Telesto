@@ -40,9 +40,12 @@ namespace Emutastic.Services
         {
             foreach (string dir in GetCandidateFolders())
             {
-                string exe = Path.Combine(dir, "ymir-sdl3.exe");
-                if (File.Exists(exe))
-                    return exe;
+                foreach (string exeName in GetExecutableNames())
+                {
+                    string exe = Path.Combine(dir, exeName);
+                    if (File.Exists(exe))
+                        return exe;
+                }
             }
 
             return null;
@@ -66,7 +69,7 @@ namespace Emutastic.Services
         public static Process Launch(Game game)
         {
             string exePath = GetExecutablePath()
-                ?? throw new FileNotFoundException("Ymir standalone executable was not found.", "ymir-sdl3.exe");
+                ?? throw new FileNotFoundException("Ymir standalone executable was not found.", "ymir-sdl3.exe or ymir.exe");
 
             if (!File.Exists(game.RomPath))
                 throw new FileNotFoundException("ROM file not found.", game.RomPath);
@@ -172,6 +175,12 @@ namespace Emutastic.Services
             }
 
             yield return Path.Combine(Environment.CurrentDirectory, "portable", "ymircore");
+        }
+
+        private static IEnumerable<string> GetExecutableNames()
+        {
+            yield return "ymir-sdl3.exe";
+            yield return "ymir.exe";
         }
 
         private static string QuoteArg(string value)

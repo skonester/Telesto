@@ -73,8 +73,9 @@ stack.
 1. Build and ship `telesto-ymir-core.dll`.
 2. Add a managed `YmirNativeCore` P/Invoke wrapper.
 3. Add an emulator window path that accepts a non-libretro backend.
-4. Feed XRGB8888 frames from the native video callback into Telesto's existing
-   `Image`/bitmap presentation path.
+4. Feed software-rendered frames from the native video callback into Telesto's
+   existing `Image`/bitmap presentation path, converting the channel order for
+   WPF presentation.
 5. Feed audio samples into Telesto's existing audio queue.
 6. Map Telesto Saturn controls into the exported `TelestoYmirButton` mask.
 7. Keep save states disabled until Ymir's cereal serializers are included in

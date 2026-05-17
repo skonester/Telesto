@@ -58,6 +58,11 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Link>ymircore\%(Filename)%(Extension)</Link>
     </Content>
+    <Content Include="..\portable\ymircore\ymir.exe" Condition="Exists('..\portable\ymircore\ymir.exe')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Link>ymircore\ymir.exe</Link>
+    </Content>
     <Content Include="..\portable\ymircore\ipl.bin" Condition="Exists('..\portable\ymircore\ipl.bin')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

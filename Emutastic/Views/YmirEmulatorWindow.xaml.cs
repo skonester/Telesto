@@ -139,6 +139,15 @@ namespace Emutastic.Views
                 if (_frameBuffer.Length != byteCount)
                     _frameBuffer = new byte[byteCount];
                 Marshal.Copy(xrgb8888, _frameBuffer, 0, byteCount);
+
+                // Ymir's software callback is consumed as XBGR by its SDL frontend; WPF wants BGRA.
+                for (int i = 0; i < byteCount; i += 4)
+                {
+                    byte red = _frameBuffer[i];
+                    _frameBuffer[i] = _frameBuffer[i + 2];
+                    _frameBuffer[i + 2] = red;
+                    _frameBuffer[i + 3] = 0xFF;
+                }
             }
 
             _videoPending = true;
@@ -150,7 +159,7 @@ namespace Emutastic.Views
                     {
                         _videoWidth = width;
                         _videoHeight = height;
-                        _bitmap = new WriteableBitmap((int)width, (int)height, 96, 96, System.Windows.Media.PixelFormats.Bgr32, null);
+                        _bitmap = new WriteableBitmap((int)width, (int)height, 96, 96, System.Windows.Media.PixelFormats.Bgra32, null);
                         GameScreen.Source = _bitmap;
                     }
 
