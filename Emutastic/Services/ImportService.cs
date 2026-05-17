@@ -1,4 +1,4 @@
-﻿using Emutastic.Services.Archives;
+using Emutastic.Services.Archives;
 using System.Linq;
 using Emutastic.Models;
 using Emutastic.Services;
@@ -705,7 +705,7 @@ namespace Emutastic.Services
             // Refresh Library action keys off — the actual on-disk location
             // of the user's collection, not the post-extraction file.
             string sourcePath = originalSourcePath ?? romPath;
-
+ 
             // ── Defensive extraction guard ──
             // Anything reaching this method that's a .zip/.7z for a non-archive-native
             // console (i.e. anything except Arcade/NeoGeo) gets extracted before being
@@ -720,7 +720,7 @@ namespace Emutastic.Services
                 if (!string.IsNullOrEmpty(extracted) && System.IO.File.Exists(extracted))
                 {
                     ImportLog($"[{fileName}] DEFENSIVE EXTRACT {romPath} → {extracted}");
-                    romPath = extracted;
+                    romPath = extracted!;
                     fileName = Path.GetFileName(extracted);
                 }
                 else
@@ -904,7 +904,7 @@ namespace Emutastic.Services
                 Console = console,
                 Manufacturer = manufacturer,
                 RomPath = romPath,
-                OriginalSourcePath = sourcePath,
+                OriginalSourcePath = sourcePath!,
                 RomHash = string.Empty,
                 BackgroundColor = colors.bg,
                 AccentColor = colors.accent,

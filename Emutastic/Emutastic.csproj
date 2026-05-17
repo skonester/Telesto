@@ -53,10 +53,15 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\portable\ymircore\ymir-sdl3.exe;..\portable\ymircore\Ymir.toml;..\portable\ymircore\gamecontrollerdb.txt;..\portable\ymircore\ipl.bin;..\portable\ymircore\z.dll;..\portable\ymircore\zd.dll;..\portable\ymircore\zstd.dll" Condition="Exists('..\portable\ymircore\ymir-sdl3.exe')">
+    <Content Include="..\portable\ymircore\ymir-sdl3.exe;..\portable\ymircore\Ymir.toml;..\portable\ymircore\gamecontrollerdb.txt;..\portable\ymircore\z.dll;..\portable\ymircore\zd.dll;..\portable\ymircore\zstd.dll" Condition="Exists('..\portable\ymircore\ymir-sdl3.exe')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Link>ymircore\%(Filename)%(Extension)</Link>
+    </Content>
+    <Content Include="..\portable\ymircore\ipl.bin" Condition="Exists('..\portable\ymircore\ipl.bin')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Link>ymircore\ipl.bin</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>
