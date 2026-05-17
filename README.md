@@ -4,10 +4,10 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-**Telesto** is a premium, state-of-the-art multi-system emulator frontend for Windows built with WPF and .NET 8, inspired by the elegant, clean interface of [OpenEmu](https://openemu.org/) on macOS.
+**Telesto** is a multi-system emulator frontend for Windows built with WPF and .NET 8, inspired by [OpenEmu](https://openemu.org/) on macOS.
 
 ### 🪐 Behind the Name
-Telesto is proudly named after a real, co-orbital moon of Saturn, and as a tribute to the iconic woman (the memorable character played by Hannah Sim) from the famous Sega Saturn commercials. Embracing its namesake, Telesto's core mission is to bring the absolute best **2026 Sega Saturn emulation solutions** directly to your desktop via a bespoke, high-performance native integration—all while maintaining its highly compatible, mature **legacy libretro backend** for a vast catalog of classic systems.
+Telesto is named after a co-orbital moon of Saturn and the woman (played by Hannah Sim) from the Sega Saturn commercials. It integrates 2026 Sega Saturn emulation solutions while maintaining a legacy libretro backend for other classic systems.
 
 **[Grab the latest release](https://github.com/skonester/telesto/releases) directly.**
 
@@ -109,18 +109,18 @@ Drag and drop ROMs onto the library or use **Import ROMs**. The app detects the 
 
 ## Sega Saturn Emulation: Ymir Integration
 
-Telesto is built to deliver the absolute best Sega Saturn emulation experience in 2026, combining the high-accuracy of the **Ymir** emulation core (developed by StrikerX3) with Telesto's elegant, high-performance UI. We offer two distinct, robust integration paths:
+Telesto supports Sega Saturn emulation through the **Ymir** core (developed by StrikerX3). We offer two integration paths:
 
 ### 🪐 Embedded/In-Process Core (`ymir_embedded`)
-For an incredibly premium, seamless gameplay experience, Telesto hosts the Ymir emulator directly in-process via a custom-built native C++ wrapper (`telesto-ymir-core.dll`) and a managed P/Invoke layer (`YmirNativeCore`).
-*   **Direct Rendering:** Software-rendered XRGB8888 frames are captured via native callbacks and presented directly onto Telesto's `WriteableBitmap` rendering surface with zero overhead.
-*   **Integrated Audio:** Low-latency stereo sample callbacks stream audio directly into Telesto's standard `AudioPlayer` queue.
+Telesto hosts the Ymir emulator in-process via a native C++ wrapper (`telesto-ymir-core.dll`) and a managed P/Invoke layer (`YmirNativeCore`).
+*   **Direct Rendering:** Software-rendered XRGB8888 frames are captured via native callbacks and presented directly onto Telesto's `WriteableBitmap` rendering surface.
+*   **Integrated Audio:** Stereo sample callbacks stream audio directly into Telesto's `AudioPlayer` queue.
 *   **Unified Controls:** Native button mapping maps Telesto's user-configured input profiles directly to Ymir's internal Saturn digital pad button masks.
 *   **Saves & Backups:** Automatic creation, formatting, and seeding of internal backup RAM as well as a 32 Mbit backup RAM cartridge image.
 *   **No Open Trays:** Automatically handles closing the virtual disc tray after boot to bypass standard CD player BIOS screens.
 
 ### 🚀 Standalone Fallback (`ymir_standalone`)
-A robust alternative that launches the standalone `ymir-sdl3.exe` external emulator while keeping it fully aligned with Telesto.
+Launches the standalone `ymir-sdl3.exe` external emulator while keeping it aligned with Telesto.
 *   **Profile Seeding:** Telesto automatically provisions and maintains a clean local Ymir profile directory under `YmirProfiles/default`, disabling automated update checks and enabling per-game internal backup RAM.
 *   **BIOS Synchronization:** On launch, Telesto checks for your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) in your central `System` directory and copies them directly into the standalone profile's `roms/ipl` subdirectory.
 
@@ -128,12 +128,12 @@ A robust alternative that launches the standalone `ymir-sdl3.exe` external emula
 
 ## What's New in Telesto
 
-Our project has evolved rapidly! Here are the core features, performance overhauls, and quality-of-life updates recently added to Telesto:
+Recent features, performance updates, and additions:
 
-*   **Arcade & MAME 2003-Plus Support:** Fully added support for the high-performance MAME 2003-Plus libretro arcade core, backed by an all-new audit framework to verify arcade ROM set compatibility.
+*   **Arcade & MAME 2003-Plus Support:** Added support for the MAME 2003-Plus libretro arcade core, with an audit framework to verify arcade ROM set compatibility.
 *   **GameCube Multi-Disc Auto-Bundling:** When importing folders containing multi-disc GameCube games, Telesto automatically bundles them into a single, clean `.m3u` playlist in your library.
-*   **Polished Theme Engine:** Expanded our styling tokens with `LibrarySelection` and `LibraryFocus` colors. The library card selection ring now hugs the exact contours of 3D game box art.
-*   **Performance Overhaul:** Fully optimized preferences caching and database read/write speeds, resulting in instant, stutter-free settings transitions.
+*   **Theme Engine Updates:** Added `LibrarySelection` and `LibraryFocus` styling tokens. The selection ring aligns with the dimensions of 3D game box art.
+*   **Preferences Performance:** Optimized preferences caching and database read/write speeds.
 *   **Smart Metadata & Screenshot Captures:** Added "once-and-done" metadata scraping, smarter screenshot directory handling, and a fully configurable global emulator hotkey.
 
 ---
