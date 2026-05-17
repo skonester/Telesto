@@ -1,40 +1,38 @@
-![Telesto](Emutastic/Assets/banners%20and%20icons/emutastic-banner-scaled.png)
-
-# Telesto
+# 🚀 Telesto
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub Release](https://img.shields.io/github/releases/skonester/telesto.svg)](https://github.com/skonester/telesto/releases/latest)
+[![GitHub Stars](https://img.shields.io/github/stars/skonester/telesto.svg?style=social)](https://github.com/skonester/telesto/stargazers)
+[![GitHub Contributors](https://img.shields.io/github/contributors/skonester/telesto.svg)](https://github.com/skonester/telesto/graphs/contributors)
 
-**Telesto** is a multi-system emulator frontend for Windows built with WPF and .NET 8, inspired by [OpenEmu](https://openemu.org/) on macOS.
+**Telesto** is a modern multi-system emulator frontend for Windows, inspired by OpenEmu on macOS. Named after Saturn's real moon and the actress from the iconic Sega Saturn commercials, Telesto orbits around the bigger projects in 2026 emulation—providing a sleek, unified interface for all your retro gaming needs.
 
-### 🪐 Behind the Name
-Telesto is named after a co-orbital moon of Saturn and the woman (played by Hannah Sim) from the Sega Saturn commercials. It integrates 2026 Sega Saturn emulation solutions while maintaining a legacy libretro backend for other classic systems.
+![Telesto Banner](Emutastic/Assets/banners%20and%20icons/emutastic-banner-scaled.png)
 
-**[Grab the latest release](https://github.com/skonester/telesto/releases) directly.**
+## Features at a Glance
 
-> **Legal notice:** This project is a frontend only. It does not include, distribute, or facilitate the acquisition of any copyrighted software, ROM images, BIOS files, or other proprietary system files. You are solely responsible for ensuring you have the legal right to use any software you load into this application.
+- **34+ emulated systems** across 11 manufacturers with automatic core selection.
 
----
+- **Integrated Sega Saturn emulation from fork** via the Ymir core (embedded or standalone).
 
 ## Requirements
 
-- Windows 10/11 x64
-- [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-- [Visual C++ Redistributable 2015–2022 (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe) — required by most libretro cores
-- libretro core `.dll` files (downloadable in-app — Preferences → Cores)
-- `SDL3.dll` (x64) for controller name detection (downloadable in-app — Preferences → Extras)
-- Optional: `ffmpeg.exe` for video recording, DAT files for ROM identification (also in Preferences → Extras)
+- **Windows 10/11** (x64)
+- **.NET 8 Desktop Runtime** - [Download here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- **Visual C++ Redistributable 2015–2022 (x64)** - [Download here](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+- **libretro core `.dll` files** (downloadable in-app)
+- **`SDL3.dll`** (x64) for controller name detection (downloadable in-app)
+- **`ffmpeg.exe`** for video recording (downloadable in-app)
+- **DAT files** for ROM identification (downloadable in-app)
 
 > **Windows SmartScreen:** Telesto is not code-signed. Click **"More info"** then **"Run anyway"** on first launch.
 
----
-
 ## Supported Systems
 
-<details>
-<summary><strong>34 systems across 11 manufacturers</strong> (click to expand)</summary>
+Telesto supports **34 systems across 11 manufacturers** with automatic core selection and intelligent fallback.
 
-| System | Tag | Core (priority order) | BIOS |
-|---|---|---|---|
+| System | Tag | Core (priority order) | BIOS Required |
+|--------|-----|----------------------|---------------|
 | NES | NES | nestopia → quicknes → fceumm | No |
 | Famicom Disk System | FDS | nestopia | `disksys.rom` |
 | SNES | SNES | snes9x → bsnes | No |
@@ -70,20 +68,15 @@ Telesto is named after a co-orbital moon of Saturn and the woman (played by Hann
 | 3DO | 3DO | opera | `panafz10.bin` |
 | Philips CD-i | CDi | same_cdi | No |
 
-</details>
-
----
-
-## BIOS Files
+## 📁 BIOS Files
 
 Place BIOS files in `%AppData%\Telesto\System\` (or `PortableData\System\` next to the .exe in portable mode). The app also checks each system's ROM folder.
 
-<details>
-<summary><strong>BIOS file details by system</strong></summary>
+### System-Specific BIOS Requirements
 
 **Sega CD** — `bios_CD_U.bin` (USA), `bios_CD_E.bin` (Europe), `bios_CD_J.bin` (Japan)
 
-**Sega Saturn** — Ymir (embedded & standalone) automatically detects and copies your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) from Telesto's central `System` directory directly into the emulator profile's `roms/ipl` subdirectory on launch. For Beetle Saturn / Kronos cores: Kronos expects `system\kronos\saturn_bios.bin`, while Beetle Saturn expects `sega_101.bin` (JP v1.00), `mpr-17933.bin` (JP v1.01), or `mpr-17941.bin` (USA/EU v1.01). Note: `mpr-17933.bin` is a Japan BIOS despite being commonly mislabeled as USA/EU.
+**Sega Saturn** — Ymir automatically detects and copies your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) from Telesto's central `System` directory directly into the emulator profile's `roms/ipl` subdirectory on launch.
 
 **PlayStation** — USA: `scph5501.bin`, `scph1001.bin`, `scph7001.bin`. Europe: `scph5502.bin`. Japan: `scph5500.bin`
 
@@ -93,11 +86,85 @@ Place BIOS files in `%AppData%\Telesto\System\` (or `PortableData\System\` next 
 
 **Famicom Disk System** — `disksys.rom`
 
-</details>
-
----
-
 ## ROM Import
+
+Telesto makes importing your ROM collection simple and intelligent:
+
+- **Drag & drop** ROMs directly onto the library
+- **Automatic detection** via file extension and SHA1 lookup against DAT files
+- **Smart multi-disc bundling** (Final Fantasy VII, Metal Gear Solid, etc.) automatically creates single library entries
+- **Hand-authored `.m3u` playlists** are honored as-is
+- **Ambiguous formats** (`.chd`, `.iso`, `.cue`, `.bin`) show a console picker if no DAT match is found
+
+**Important:** Download DAT files in **Preferences → Cores / Extras** before importing for best results.
+
+## 🎮 Sega Saturn Emulation: Ymir Integration
+
+Telesto features deep integration with the Ymir Saturn emulator core:
+
+### 🪐 Embedded/In-Process Core (`ymir_embedded`)
+- **Direct Rendering:** Software-rendered frames captured via native callbacks
+- **Integrated Audio:** Stereo sample callbacks stream directly into Telesto's audio player
+- **Unified Controls:** Native button mapping to Ymir's Saturn digital pad button masks
+- **Saves & Backups:** Automatic creation and formatting of backup RAM
+- **No Open Trays:** Automatically handles virtual disc tray after boot
+
+### Standalone Fallback (`ymir_standalone`)
+- **Profile Seeding:** Clean local Ymir profile with updates disabled
+- **BIOS Synchronization:** Automatic copying of IPL BIOS files to standalone profile
+
+
+## Features
+
+### Themes
+- Four built-in themes: **Dark** (default), **Light**, **OLED Black**, **Midnight Blue**
+- Full visual editor with 44 color tokens and live preview
+- Custom background images with zoom, pan, and tile controls
+- Export/import themes as `.emutheme` files
+
+### Controllers
+- XInput button polling during gameplay
+- SDL3 device name detection for hundreds of controllers
+- Per-controller button mapping in **Preferences → Input**
+- Falls back to generic names if `SDL3.dll` is absent
+
+### RetroAchievements
+- Earn achievements while playing via [RetroAchievements](https://retroachievements.org/)
+- Enable in **Preferences → Achievements** with your RA username and password
+- Achievements appear as toast notifications during gameplay
+
+### About & Updates
+- **Preferences → About** shows version, build date, and credits
+- Automatic GitHub release checking with manual download option
+- Notification-only — no auto-installer, no telemetry
+
+### Core Options
+- Per-core settings (internal resolution, graphics plugins, etc.)
+- Access in **Preferences → Core Options**
+
+### Disk Swapping (FDS, PS1, Saturn, Sega CD)
+- Press **L3 + Start** in-game to flip between discs/sides
+- Rebindable to any two-button chord in **Preferences → Controls → Disk Swap**
+- Status bar shows new disc number on each swap
+- Multi-disc games auto-bundled at import time
+
+## 📁 Folder Layout
+
+```
+Telesto.exe / rcheevos.dll / .NET runtime DLLs
+```
+
+```
+%AppData%\Telesto\          (or your custom data folder)
+    library.db
+    Native\                   (SDL3.dll, ffmpeg.exe)
+    DATs\                     (No-Intro / Redump DATs)
+    Cores\                    (libretro core DLLs)
+    System\                   (BIOS files)
+    Save States\ / BatterySaves\ / Screenshots\ / Recordings\ / Artwork\ / ...
+```
+
+### Portable mode
 
 Drag and drop ROMs onto the library or use **Import ROMs**. The app detects the console from file extension, cleans the title, and hashes the ROM. For ambiguous formats (`.chd`, `.iso`, `.cue`, `.bin`), a SHA1 lookup against DAT files is attempted first — if no match, a console picker is shown.
 
