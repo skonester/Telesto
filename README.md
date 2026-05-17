@@ -154,7 +154,7 @@ Telesto features deep integration with the Ymir Saturn emulator core:
 - Status bar shows new disc number on each swap
 - Multi-disc games auto-bundled at import time
 
-## 📁 Folder Layout
+## Folder Layout
 
 ```
 Telesto.exe / rcheevos.dll / .NET runtime DLLs
@@ -184,7 +184,7 @@ Drag and drop ROMs onto the library or use **Import ROMs**. The app detects the 
 
 Telesto supports Sega Saturn emulation through the **Ymir** core (developed by StrikerX3). We offer two integration paths:
 
-### 🪐 Embedded/In-Process Core (`ymir_embedded`)
+### Embedded/In-Process Core (`ymir_embedded`)
 Telesto hosts the Ymir emulator in-process via a native C++ wrapper (`telesto-ymir-core.dll`) and a managed P/Invoke layer (`YmirNativeCore`).
 *   **Direct Rendering:** Software-rendered XRGB8888 frames are captured via native callbacks and presented directly onto Telesto's `WriteableBitmap` rendering surface.
 *   **Integrated Audio:** Stereo sample callbacks stream audio directly into Telesto's `AudioPlayer` queue.
@@ -198,19 +198,6 @@ Launches the standalone `ymir-sdl3.exe` external emulator while keeping it align
 *   **BIOS Synchronization:** On launch, Telesto checks for your Saturn IPL BIOS files (`sega_101.bin`, `mpr-17933.bin`, `mpr-17941.bin`) in your central `System` directory and copies them directly into the standalone profile's `roms/ipl` subdirectory.
 
 ---
-
-## What's New in Telesto
-
-Recent features, performance updates, and additions:
-
-*   **Arcade & MAME 2003-Plus Support:** Added support for the MAME 2003-Plus libretro arcade core, with an audit framework to verify arcade ROM set compatibility.
-*   **GameCube Multi-Disc Auto-Bundling:** When importing folders containing multi-disc GameCube games, Telesto automatically bundles them into a single, clean `.m3u` playlist in your library.
-*   **Theme Engine Updates:** Added `LibrarySelection` and `LibraryFocus` styling tokens. The selection ring aligns with the dimensions of 3D game box art.
-*   **Preferences Performance:** Optimized preferences caching and database read/write speeds.
-*   **Smart Metadata & Screenshot Captures:** Added "once-and-done" metadata scraping, smarter screenshot directory handling, and a fully configurable global emulator hotkey.
-
----
-
 ## Features
 
 <details>
