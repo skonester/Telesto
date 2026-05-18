@@ -85,14 +85,6 @@ TELESTO_YMIR_API TelestoYmirResult telesto_ymir_insert_backup_ram_cartridge(
     TelestoYmirContext *ctx,
     const char *path_utf8);
 
-TELESTO_YMIR_API TelestoYmirResult telesto_ymir_save_state(
-    TelestoYmirContext *ctx,
-    const char *path_utf8);
-
-TELESTO_YMIR_API TelestoYmirResult telesto_ymir_load_state(
-    TelestoYmirContext *ctx,
-    const char *path_utf8);
-
 TELESTO_YMIR_API void telesto_ymir_reset(TelestoYmirContext *ctx, int hard);
 TELESTO_YMIR_API void telesto_ymir_run_frame(TelestoYmirContext *ctx);
 

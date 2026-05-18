@@ -22,9 +22,6 @@ set(WITH_LZMA_ASM OFF CACHE BOOL "" FORCE)
 
 add_subdirectory("${TELESTO_YMIR_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/ymir")
 
-find_package(cereal CONFIG REQUIRED)
-find_package(fmt CONFIG REQUIRED)
-
 add_library(telesto-ymir-core SHARED
     include/telesto_ymir_core.h
     src/telesto_ymir_core.cpp
@@ -37,15 +34,11 @@ target_compile_features(telesto-ymir-core PRIVATE cxx_std_20)
 target_include_directories(telesto-ymir-core
     PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    PRIVATE
-        "${TELESTO_YMIR_SOURCE_DIR}/apps/ymir-sdl3/src"
 )
 
 target_link_libraries(telesto-ymir-core
     PRIVATE
         ymir::ymir-core
-        cereal::cereal
-        fmt::fmt
 )
 
 target_compile_definitions(telesto-ymir-core

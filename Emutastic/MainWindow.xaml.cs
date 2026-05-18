@@ -2793,70 +2793,23 @@ namespace Emutastic
                 return;
             }
 
-            string? preferredYmirCore = Services.YmirLauncher.GetPreferredYmirCore(game, App.Configuration);
-            bool stateIsEmbeddedYmir = string.Equals(s.CoreName, Services.YmirLauncher.EmbeddedCoreId, StringComparison.OrdinalIgnoreCase);
-            string savedCoreDisplay = string.IsNullOrWhiteSpace(s.CoreName) ? "another core" : s.CoreName;
-            if (Services.YmirLauncher.IsStandaloneCore(preferredYmirCore ?? ""))
+            if (Services.YmirLauncher.IsPreferredFor(game, App.Configuration))
             {
                 MessageBox.Show(
-                    "Ymir standalone does not support Telesto save-state loading.\n\nChoose Ymir embedded or a libretro Saturn core to load Telesto save states.",
+                    "Ymir does not support Telesto save-state loading yet.\n\nUse Play Game to launch this Saturn title with Ymir, or choose a libretro Saturn core to load Telesto save states.",
                     "Save State Not Available",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 return;
             }
 
-            if (Services.YmirLauncher.IsEmbeddedCore(preferredYmirCore ?? "")
-                && !stateIsEmbeddedYmir)
-            {
-                MessageBox.Show(
-                    $"This save state was made with {savedCoreDisplay}; current Saturn preference is Ymir embedded.\n\nSwitch the per-game core back to the saved core or make a fresh embedded Ymir state.",
-                    "Save State Core Mismatch",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-                return;
-            }
-
-            if (stateIsEmbeddedYmir && Services.YmirLauncher.IsEmbeddedAvailable())
-            {
-                try
-                {
-                    var emu = new Views.YmirEmulatorWindow(game, s.StatePath) { Owner = this };
-                    emu.Show();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Failed to launch Ymir:\n\n{ex.Message}", "Launch Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                return;
-            }
-
             string? corePath = _coreManager.GetCorePathForGame(game);
             if (corePath == null
                 && string.Equals(game.Console, "Saturn", StringComparison.OrdinalIgnoreCase)
-                && stateIsEmbeddedYmir
-                && Services.YmirLauncher.IsEmbeddedAvailable())
-            {
-                try
-                {
-                    var emu = new Views.YmirEmulatorWindow(game, s.StatePath) { Owner = this };
-                    emu.Show();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Failed to launch Ymir:\n\n{ex.Message}", "Launch Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                return;
-            }
-
-            if (corePath == null
-                && string.Equals(game.Console, "Saturn", StringComparison.OrdinalIgnoreCase)
-                && Services.YmirLauncher.IsStandaloneAvailable())
+                && Services.YmirLauncher.IsAvailable())
             {
                 MessageBox.Show(
-                    "Ymir standalone does not support Telesto save-state loading.\n\nChoose Ymir embedded or a libretro Saturn core to load Telesto save states.",
+                    "Ymir does not support Telesto save-state loading yet.\n\nUse Play Game to launch this Saturn title with Ymir, or choose a libretro Saturn core to load Telesto save states.",
                     "Save State Not Available",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);

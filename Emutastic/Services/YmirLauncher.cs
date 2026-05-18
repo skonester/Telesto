@@ -142,7 +142,7 @@ namespace Emutastic.Services
             {
                 string config = File.ReadAllText(configPath, Encoding.UTF8);
                 config = ReplaceTomlBool(config, "CheckForUpdates", false);
-                config = ReplaceTomlBool(config, "InternalBackupRAMPerGame", false);
+                config = ReplaceTomlBool(config, "InternalBackupRAMPerGame", true);
                 File.WriteAllText(configPath, config, Encoding.UTF8);
             }
             catch (Exception ex)
