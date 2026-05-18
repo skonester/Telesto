@@ -85,11 +85,56 @@
             <Border Grid.Row="2"
                     Background="{DynamicResource BgSecondaryBrush}"
                     Padding="10,6">
-                <TextBlock x:Name="FooterText"
-                           Text="Ymir embedded"
-                           FontFamily="{StaticResource PrimaryFont}"
-                           FontSize="11"
-                           Foreground="{DynamicResource TextMutedBrush}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock x:Name="FooterText"
+                               Grid.Column="0"
+                               Text="Ymir embedded"
+                               FontFamily="{StaticResource PrimaryFont}"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               VerticalAlignment="Center"/>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal">
+                        <Button x:Name="PauseResumeBtn"
+                                Width="28"
+                                Height="24"
+                                Margin="0,0,6,0"
+                                Padding="0"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE769;"
+                                ToolTip="Pause"
+                                Click="PauseResumeBtn_Click"/>
+                        <Button Width="28"
+                                Height="24"
+                                Margin="0,0,6,0"
+                                Padding="0"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE72C;"
+                                ToolTip="Reset"
+                                Click="ResetBtn_Click"/>
+                        <Button Width="28"
+                                Height="24"
+                                Margin="0,0,6,0"
+                                Padding="0"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE74E;"
+                                ToolTip="Save State"
+                                Click="SaveStateBtn_Click"/>
+                        <Button Width="28"
+                                Height="24"
+                                Padding="0"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE895;"
+                                ToolTip="Load Latest State"
+                                Click="LoadLatestStateBtn_Click"/>
+                    </StackPanel>
+                </Grid>
             </Border>
         </Grid>
     </Border>

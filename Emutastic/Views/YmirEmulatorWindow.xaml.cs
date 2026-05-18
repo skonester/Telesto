@@ -1,14 +1,17 @@
 using Emutastic.Models;
 using Emutastic.Services;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -18,14 +21,26 @@ namespace Emutastic.Views
     {
         private readonly Game _game;
         private readonly ControllerManager _controller;
+        private readonly DatabaseService _db;
+        private readonly string _saveStatePath;
+        private readonly string? _pendingInitialLoadStatePath;
         private readonly HashSet<Key> _keysDown = new();
         private readonly object _frameLock = new();
+        private readonly object _pendingStateLock = new();
 
         private YmirNativeCore? _core;
         private AudioPlayer? _audioPlayer;
         private Thread? _emuThread;
         private volatile bool _stopRequested;
         private volatile bool _videoPending;
+        private volatile bool _paused;
+        private volatile bool _resetPending;
+        private volatile bool _hardResetPending;
+        private volatile bool _saveStatePending;
+        private volatile bool _loadStatePending;
+        private string _pendingSaveName = "";
+        private string _pendingLoadPath = "";
+        private string _pendingLoadName = "";
         private byte[] _frameBuffer = Array.Empty<byte>();
         private WriteableBitmap? _bitmap;
         private uint _videoWidth;
@@ -34,9 +49,10 @@ namespace Emutastic.Views
         private readonly YmirNativeCore.VideoCallback _videoCallback;
         private readonly YmirNativeCore.AudioCallback _audioCallback;
 
-        public YmirEmulatorWindow(Game game)
+        public YmirEmulatorWindow(Game game, string? pendingLoadStatePath = null)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
+            _pendingInitialLoadStatePath = pendingLoadStatePath;
             _videoCallback = OnVideoFrame;
             _audioCallback = OnAudioSample;
 
@@ -49,6 +65,9 @@ namespace Emutastic.Views
                 App.Configuration ?? throw new InvalidOperationException("Configuration not initialized"),
                 null,
                 game.Console);
+            _db = new DatabaseService();
+            _saveStatePath = AppPaths.GetFolder("Save States",
+                SanitizeFileName(game.Console), SanitizeFileName(game.Title));
 
             Loaded += OnLoaded;
         }
@@ -83,6 +102,11 @@ namespace Emutastic.Views
                 _core.InsertBackupRamCartridge(cartridgeBackupPath);
                 _core.LoadDisc(_game.RomPath);
 
+                if (!string.IsNullOrWhiteSpace(_pendingInitialLoadStatePath))
+                {
+                    QueueLoadState(_pendingInitialLoadStatePath, Path.GetFileNameWithoutExtension(_pendingInitialLoadStatePath));
+                }
+
                 _audioPlayer = new AudioPlayer(44100) { DesiredLatencyMs = 90 };
                 _audioPlayer.Start();
                 _audioPlayer.BeginPlayback();
@@ -97,8 +121,18 @@ namespace Emutastic.Views
 
                 while (!_stopRequested)
                 {
+                    if (_paused)
+                    {
+                        Thread.Sleep(16);
+                        nextTick = Stopwatch.GetTimestamp();
+                        continue;
+                    }
+
                     UpdateInput();
+                    ProcessPendingReset();
                     _core.RunFrame();
+                    ProcessPendingSaveState();
+                    ProcessPendingLoadState();
 
                     nextTick += ticksPerFrame;
                     long delayTicks = nextTick - Stopwatch.GetTimestamp();
@@ -139,6 +173,8 @@ namespace Emutastic.Views
                 if (_frameBuffer.Length != byteCount)
                     _frameBuffer = new byte[byteCount];
                 Marshal.Copy(xrgb8888, _frameBuffer, 0, byteCount);
+                _videoWidth = width;
+                _videoHeight = height;
 
                 // Ymir's software callback is consumed as XBGR by its SDL frontend; WPF wants BGRA.
                 for (int i = 0; i < byteCount; i += 4)
@@ -212,6 +248,224 @@ namespace Emutastic.Views
             _core?.SetControlPadState(0, buttons);
         }
 
+        private void RequestReset(bool hard)
+        {
+            _hardResetPending = hard;
+            _resetPending = true;
+            ShowFooterMessage(hard ? "Hard reset..." : "Reset...");
+        }
+
+        private void ProcessPendingReset()
+        {
+            if (!_resetPending || _core == null)
+                return;
+
+            bool hard = _hardResetPending;
+            _resetPending = false;
+            _hardResetPending = false;
+
+            try
+            {
+                _core.Reset(hard);
+                ShowFooterMessage(hard ? "Hard reset" : "Reset");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("[YmirEmulatorWindow] Reset failed: " + ex);
+                ShowFooterMessage("Reset failed");
+            }
+        }
+
+        private void TogglePause()
+        {
+            _paused = !_paused;
+            Dispatcher.BeginInvoke(() =>
+            {
+                PauseResumeBtn.Content = _paused ? "\uE768" : "\uE769";
+                PauseResumeBtn.ToolTip = _paused ? "Resume" : "Pause";
+                FooterText.Text = _paused ? "Paused" : "Ymir embedded";
+            });
+        }
+
+        private void RequestSaveState()
+        {
+            string name = DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss");
+            lock (_pendingStateLock)
+            {
+                _pendingSaveName = name;
+                _saveStatePending = true;
+            }
+            ShowFooterMessage("Saving state...");
+        }
+
+        private void RequestLoadLatestState()
+        {
+            var state = _db.GetSaveStatesByGame(_game.Id)
+                .FirstOrDefault(s => string.Equals(s.CoreName, YmirLauncher.EmbeddedCoreId, StringComparison.OrdinalIgnoreCase));
+            if (state == null)
+            {
+                ShowFooterMessage("No embedded Ymir save states yet");
+                return;
+            }
+
+            QueueLoadState(state.StatePath, state.Name);
+        }
+
+        private void QueueLoadState(string path, string name)
+        {
+            lock (_pendingStateLock)
+            {
+                _pendingLoadPath = path;
+                _pendingLoadName = name;
+                _loadStatePending = true;
+            }
+            ShowFooterMessage("Loading state...");
+        }
+
+        private void ProcessPendingSaveState()
+        {
+            if (!_saveStatePending || _core == null)
+                return;
+
+            string name;
+            lock (_pendingStateLock)
+            {
+                name = _pendingSaveName;
+                _saveStatePending = false;
+                _pendingSaveName = "";
+            }
+
+            try
+            {
+                if (!_core.SupportsSaveStates)
+                {
+                    ShowFooterMessage("Rebuild telesto-ymir-core.dll for save states");
+                    return;
+                }
+
+                string safeName = SanitizeFileName(string.IsNullOrWhiteSpace(name) ? "state" : name);
+                string statePath = Path.Combine(_saveStatePath, safeName + ".state");
+                string pngPath = Path.Combine(_saveStatePath, safeName + ".png");
+                string jsonPath = Path.Combine(_saveStatePath, safeName + ".json");
+
+                Directory.CreateDirectory(_saveStatePath);
+                _core.SaveState(statePath);
+                SaveScreenshot(pngPath);
+                WriteSaveStateMetadata(name, statePath, pngPath, jsonPath);
+                ShowFooterMessage($"Saved: {name}");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("[YmirEmulatorWindow] Save state failed: " + ex);
+                ShowFooterMessage("Save state failed");
+            }
+        }
+
+        private void ProcessPendingLoadState()
+        {
+            if (!_loadStatePending || _core == null)
+                return;
+
+            string path;
+            string name;
+            lock (_pendingStateLock)
+            {
+                path = _pendingLoadPath;
+                name = _pendingLoadName;
+                _loadStatePending = false;
+                _pendingLoadPath = "";
+                _pendingLoadName = "";
+            }
+
+            try
+            {
+                if (!_core.SupportsSaveStates)
+                {
+                    ShowFooterMessage("Rebuild telesto-ymir-core.dll for save states");
+                    return;
+                }
+
+                _core.LoadState(path);
+                ShowFooterMessage($"Loaded: {name}");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("[YmirEmulatorWindow] Load state failed: " + ex);
+                ShowFooterMessage("Load state failed");
+            }
+        }
+
+        private void SaveScreenshot(string pngPath)
+        {
+            byte[] pixels;
+            int width;
+            int height;
+
+            lock (_frameLock)
+            {
+                if (_frameBuffer.Length == 0 || _videoWidth == 0 || _videoHeight == 0)
+                    return;
+
+                pixels = (byte[])_frameBuffer.Clone();
+                width = (int)_videoWidth;
+                height = (int)_videoHeight;
+            }
+
+            var bitmap = BitmapSource.Create(width, height, 96, 96, PixelFormats.Bgra32, null, pixels, width * 4);
+            if (bitmap.CanFreeze)
+                bitmap.Freeze();
+
+            using var fs = new FileStream(pngPath, FileMode.Create);
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            encoder.Save(fs);
+        }
+
+        private void WriteSaveStateMetadata(string name, string statePath, string pngPath, string jsonPath)
+        {
+            var meta = new
+            {
+                Name = name,
+                GameTitle = _game.Title,
+                ConsoleName = _game.Console,
+                CoreName = YmirLauncher.EmbeddedCoreId,
+                RomHash = _game.RomHash ?? "",
+                CreatedAt = DateTime.Now.ToString("o"),
+            };
+
+            File.WriteAllText(jsonPath, JsonSerializer.Serialize(meta, new JsonSerializerOptions { WriteIndented = true }));
+
+            var saveState = new SaveState
+            {
+                GameId = _game.Id,
+                Name = name,
+                GameTitle = _game.Title,
+                ConsoleName = _game.Console,
+                CoreName = YmirLauncher.EmbeddedCoreId,
+                RomHash = _game.RomHash ?? "",
+                StatePath = statePath,
+                ScreenshotPath = File.Exists(pngPath) ? pngPath : "",
+                CreatedAt = DateTime.Now,
+            };
+
+            var existing = _db.GetSaveStateByGameAndName(_game.Id, name);
+            if (existing != null)
+            {
+                _db.UpdateSaveStateName(existing.Id, name, statePath, saveState.ScreenshotPath);
+            }
+            else
+            {
+                _db.InsertSaveState(saveState);
+                _db.RecalcSaveCount(_game.Id);
+                _game.SaveCount++;
+            }
+        }
+
+        private void ShowFooterMessage(string text)
+        {
+            Dispatcher.BeginInvoke(() => FooterText.Text = text);
+        }
+
         private bool IsPressed(Key key)
         {
             lock (_keysDown)
@@ -257,10 +511,7 @@ namespace Emutastic.Views
 
         private string GetBackupRamPath()
         {
-            string stem = Path.GetFileNameWithoutExtension(_game.RomPath);
-            foreach (char c in Path.GetInvalidFileNameChars())
-                stem = stem.Replace(c, '_');
-            return Path.Combine(AppPaths.GetFolder("BatterySaves", "Saturn", "Ymir"), stem + ".bup");
+            return Path.Combine(AppPaths.GetFolder("BatterySaves", "Saturn", "Ymir"), "bup-int.bin");
         }
 
         private string GetBackupRamCartridgePath()
@@ -271,11 +522,38 @@ namespace Emutastic.Views
             return Path.Combine(AppPaths.GetFolder("BatterySaves", "Saturn", "Ymir", "Cartridges"), stem + ".bup");
         }
 
+        private static string SanitizeFileName(string value)
+        {
+            var invalid = Path.GetInvalidFileNameChars();
+            return new string(value.Select(c => invalid.Contains(c) ? '_' : c).ToArray()).Trim();
+        }
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
                 Close();
+                return;
+            }
+
+            if (e.Key == Key.F5)
+            {
+                RequestSaveState();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.F6)
+            {
+                TogglePause();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.F8)
+            {
+                RequestLoadLatestState();
+                e.Handled = true;
                 return;
             }
 
@@ -309,6 +587,10 @@ namespace Emutastic.Views
         private void MinBtn_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
         private void MaxBtn_Click(object sender, RoutedEventArgs e) => ToggleMaximize();
         private void CloseBtn_Click(object sender, RoutedEventArgs e) => Close();
+        private void PauseResumeBtn_Click(object sender, RoutedEventArgs e) => TogglePause();
+        private void ResetBtn_Click(object sender, RoutedEventArgs e) => RequestReset(hard: true);
+        private void SaveStateBtn_Click(object sender, RoutedEventArgs e) => RequestSaveState();
+        private void LoadLatestStateBtn_Click(object sender, RoutedEventArgs e) => RequestLoadLatestState();
 
         private void ToggleMaximize()
         {

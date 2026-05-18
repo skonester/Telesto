@@ -3,6 +3,11 @@
 #include <ymir/ymir.hpp>
 #include <ymir/hw/cart/cart_impl_bup.hpp>
 
+#include <serdes/cereal_savestate.hpp>
+
+#include <cereal/archives/portable_binary.hpp>
+#include <fmt/format.h>
+
 #include <array>
 #include <exception>
 #include <filesystem>
@@ -250,6 +255,67 @@ TELESTO_YMIR_API TelestoYmirResult telesto_ymir_insert_backup_ram_cartridge(
         }
 
         ctx->saturn.InsertCartridge<ymir::cart::BackupMemoryCartridge>(std::move(backupRam));
+        return TELESTO_YMIR_OK;
+    } catch (const std::exception &ex) {
+        return ctx->Fail(TELESTO_YMIR_CORE_ERROR, ex.what());
+    }
+}
+
+TELESTO_YMIR_API TelestoYmirResult telesto_ymir_save_state(
+    TelestoYmirContext *ctx,
+    const char *path_utf8) {
+    if (!ctx || !path_utf8) {
+        return TELESTO_YMIR_INVALID_ARGUMENT;
+    }
+
+    try {
+        const auto path = FromUtf8Path(path_utf8);
+        if (path.has_parent_path()) {
+            std::filesystem::create_directories(path.parent_path());
+        }
+
+        ymir::savestate::SaveState state{};
+        ctx->saturn.SaveState(state);
+
+        std::ofstream out{path, std::ios::binary};
+        if (!out) {
+            return ctx->Fail(TELESTO_YMIR_CORE_ERROR, "Could not open save state file for writing");
+        }
+
+        cereal::PortableBinaryOutputArchive archive{out};
+        archive(state);
+        return TELESTO_YMIR_OK;
+    } catch (const std::exception &ex) {
+        return ctx->Fail(TELESTO_YMIR_CORE_ERROR, ex.what());
+    }
+}
+
+TELESTO_YMIR_API TelestoYmirResult telesto_ymir_load_state(
+    TelestoYmirContext *ctx,
+    const char *path_utf8) {
+    if (!ctx || !path_utf8) {
+        return TELESTO_YMIR_INVALID_ARGUMENT;
+    }
+
+    try {
+        const auto path = FromUtf8Path(path_utf8);
+        if (!std::filesystem::exists(path)) {
+            return ctx->Fail(TELESTO_YMIR_FILE_NOT_FOUND, "Save state file not found");
+        }
+
+        std::ifstream in{path, std::ios::binary};
+        if (!in) {
+            return ctx->Fail(TELESTO_YMIR_CORE_ERROR, "Could not open save state file for reading");
+        }
+
+        ymir::savestate::SaveState state{};
+        cereal::PortableBinaryInputArchive archive{in};
+        archive(state);
+
+        if (!ctx->saturn.LoadState(state)) {
+            return ctx->Fail(TELESTO_YMIR_CORE_ERROR, "Save state did not match the loaded Saturn session");
+        }
+
         return TELESTO_YMIR_OK;
     } catch (const std::exception &ex) {
         return ctx->Fail(TELESTO_YMIR_CORE_ERROR, ex.what());

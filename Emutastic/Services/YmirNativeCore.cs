@@ -74,6 +74,8 @@ namespace Emutastic.Services
         private readonly LoadPathDelegate _loadDisc;
         private readonly LoadPathDelegate _loadInternalBackupRam;
         private readonly LoadPathDelegate _insertBackupRamCartridge;
+        private readonly LoadPathDelegate? _saveState;
+        private readonly LoadPathDelegate? _loadState;
         private readonly ResetDelegate _reset;
         private readonly RunFrameDelegate _runFrame;
         private readonly SetControlPadStateDelegate _setControlPadState;
@@ -112,6 +114,8 @@ namespace Emutastic.Services
             _loadDisc = GetExport<LoadPathDelegate>("telesto_ymir_load_disc");
             _loadInternalBackupRam = GetExport<LoadPathDelegate>("telesto_ymir_load_internal_backup_ram");
             _insertBackupRamCartridge = GetExport<LoadPathDelegate>("telesto_ymir_insert_backup_ram_cartridge");
+            _saveState = TryGetExport<LoadPathDelegate>("telesto_ymir_save_state");
+            _loadState = TryGetExport<LoadPathDelegate>("telesto_ymir_load_state");
             _reset = GetExport<ResetDelegate>("telesto_ymir_reset");
             _runFrame = GetExport<RunFrameDelegate>("telesto_ymir_run_frame");
             _setControlPadState = GetExport<SetControlPadStateDelegate>("telesto_ymir_set_control_pad_state");
@@ -131,6 +135,19 @@ namespace Emutastic.Services
         public void LoadDisc(string path) => ThrowIfFailed(_loadDisc(_ctx, path), "load disc image");
         public void LoadInternalBackupRam(string path) => ThrowIfFailed(_loadInternalBackupRam(_ctx, path), "load internal backup RAM");
         public void InsertBackupRamCartridge(string path) => ThrowIfFailed(_insertBackupRamCartridge(_ctx, path), "insert backup RAM cartridge");
+        public bool SupportsSaveStates => _saveState != null && _loadState != null;
+        public void SaveState(string path)
+        {
+            if (_saveState == null)
+                throw new NotSupportedException("This Ymir native wrapper does not expose save-state support yet. Rebuild telesto-ymir-core.dll.");
+            ThrowIfFailed(_saveState(_ctx, path), "save state");
+        }
+        public void LoadState(string path)
+        {
+            if (_loadState == null)
+                throw new NotSupportedException("This Ymir native wrapper does not expose save-state support yet. Rebuild telesto-ymir-core.dll.");
+            ThrowIfFailed(_loadState(_ctx, path), "load state");
+        }
         public void Reset(bool hard) => _reset(_ctx, hard ? 1 : 0);
         public void RunFrame() => _runFrame(_ctx);
         public void SetControlPadState(uint port, Buttons pressedButtons)
@@ -152,6 +169,13 @@ namespace Emutastic.Services
         {
             IntPtr address = NativeLibrary.GetExport(_library, name);
             return Marshal.GetDelegateForFunctionPointer<T>(address);
+        }
+
+        private T? TryGetExport<T>(string name) where T : Delegate
+        {
+            return NativeLibrary.TryGetExport(_library, name, out IntPtr address)
+                ? Marshal.GetDelegateForFunctionPointer<T>(address)
+                : null;
         }
 
         private void ThrowIfFailed(Result result, string operation)
