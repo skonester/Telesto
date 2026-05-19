@@ -69,7 +69,7 @@ namespace Emutastic.Services
         public static Process Launch(Game game)
         {
             string exePath = GetExecutablePath()
-                ?? throw new FileNotFoundException("Ymir standalone executable was not found.", "ymir-sdl3.exe or ymir.exe");
+                ?? throw new FileNotFoundException("Ymir standalone executable was not found.", "ymir.sdl3.exe, ymir-sdl3.exe, or ymir.exe");
 
             if (!File.Exists(game.RomPath))
                 throw new FileNotFoundException("ROM file not found.", game.RomPath);
@@ -179,6 +179,7 @@ namespace Emutastic.Services
 
         private static IEnumerable<string> GetExecutableNames()
         {
+            yield return "ymir.sdl3.exe";
             yield return "ymir-sdl3.exe";
             yield return "ymir.exe";
         }

@@ -24,3 +24,4 @@
 - Rebuilt the native Ymir wrapper successfully after restoring the stable baseline.
 - Rebuilt the managed Telesto app successfully with `0` warnings and `0` errors.
 - Published a standalone Windows x64 build after the revert.
+- Restored standalone Ymir SDL3 discovery in core preferences for both `ymir.sdl3.exe` and `ymir-sdl3.exe` payload names.

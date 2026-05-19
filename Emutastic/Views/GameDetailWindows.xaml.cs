@@ -351,7 +351,7 @@ namespace Emutastic.Views
             if (ymirPreferred)
             {
                 MessageBox.Show(
-                    "Ymir is selected for Saturn, but neither telesto-ymir-core.dll nor ymir-sdl3.exe was found.",
+                    "Ymir is selected for Saturn, but neither telesto-ymir-core.dll nor a standalone Ymir SDL3 executable was found.",
                     "Missing Ymir",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
