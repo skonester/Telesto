@@ -2,6 +2,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![GitHub Contributors](https://img.shields.io/github/contributors/skonester/telesto.svg)](https://github.com/skonester/telesto/graphs/contributors)
+[![GitHub Downloads](https://img.shields.io/github/downloads/skonester/telesto/total.svg)](https://github.com/skonester/telesto/releases)
 
 **Telesto** is a modern multi-system libretro emulator frontend for Windows, inspired originally by OpenEmu on macOS.
 
