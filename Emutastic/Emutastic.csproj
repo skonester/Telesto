@@ -56,26 +56,32 @@
     <Content Include="..\portable\ymircore\Ymir.toml;..\portable\ymircore\gamecontrollerdb.txt;..\portable\ymircore\z.dll;..\portable\ymircore\zd.dll;..\portable\ymircore\zstd.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <Link>ymircore\%(Filename)%(Extension)</Link>
     </Content>
+
     <Content Include="..\portable\ymircore\ymir.sdl3.exe" Condition="Exists('..\portable\ymircore\ymir.sdl3.exe')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <Link>ymircore\ymir.sdl3.exe</Link>
     </Content>
     <Content Include="..\portable\ymircore\ymir-sdl3.exe" Condition="Exists('..\portable\ymircore\ymir-sdl3.exe')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <Link>ymircore\ymir-sdl3.exe</Link>
     </Content>
     <Content Include="..\portable\ymircore\ymir.exe" Condition="Exists('..\portable\ymircore\ymir.exe')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <Link>ymircore\ymir.exe</Link>
     </Content>
     <Content Include="..\portable\ymircore\ipl.bin" Condition="Exists('..\portable\ymircore\ipl.bin')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <Link>ymircore\ipl.bin</Link>
     </Content>
   </ItemGroup>
@@ -83,7 +89,8 @@
     <Content Include="..\native\ymir-telesto-core\build-release\telesto-ymir-core.dll" Condition="Exists('..\native\ymir-telesto-core\build-release\telesto-ymir-core.dll')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <Link>ymircore\telesto-ymir-core.dll</Link>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <Link>telesto-ymir-core.dll</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>

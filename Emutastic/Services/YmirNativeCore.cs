@@ -166,6 +166,8 @@ namespace Emutastic.Services
         private static IEnumerable<string> GetCandidateFolders()
         {
             string exeFolder = AppPaths.GetExeFolder();
+            yield return exeFolder;
+            yield return AppContext.BaseDirectory;
             yield return Path.Combine(exeFolder, "ymircore");
             yield return Path.Combine(AppContext.BaseDirectory, "ymircore");
             yield return Path.Combine(AppPaths.GetNativeFolder(), "ymircore");
