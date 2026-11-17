@@ -1,87 +1,39 @@
-# Telesto Ymir Core Wrapper
+# Telesto Ymir core wrapper
 
-This project builds a small native `telesto-ymir-core.dll` around upstream
-`StrikerX3/Ymir`'s `libs/ymir-core` target. It is intentionally not the full
-Ymir SDL app. Telesto supplies the window, input, audio queue, video surface,
-BIOS path, disc path, and save folders.
+This DLL embeds [ymir-emu/Ymir](https://github.com/ymir-emu/Ymir)'s `ymir::ymir-core` library in Telesto through a small C ABI. Telesto owns the window, audio queue, video surface, BIOS/disc paths, save folders, and digital pad input.
 
-## Build
+The supported development baseline is Ymir **v0.4.1**, pinned by tag and full commit in [`../ymir-source.json`](../ymir-source.json). Older 0.3.1 checkouts need the original adapter and are no longer supported by this build. Weekly releases resolve the latest stable upstream release; see [the release guide](../../docs/releases.md).
 
-Clone Ymir with submodules somewhere outside this repo:
+## Build on Windows
 
-```powershell
-git clone --recurse-submodules https://github.com/StrikerX3/Ymir C:\src\Ymir
-```
+Install Visual Studio 2022 C++ Build Tools, a Windows SDK including DXC, Clang, CMake 3.28+ and Ninja. The core-only build does not require vcpkg. Use a fresh build directory when changing upstream versions or toolchains.
 
-Configure the wrapper with Ymir's vcpkg toolchain:
+From the Telesto repository root:
 
 ```powershell
-cmake -S native\ymir-telesto-core -B native\ymir-telesto-core\build -G Ninja `
-  -DCMAKE_BUILD_TYPE=Release `
-  -DTELESTO_YMIR_SOURCE_DIR=C:\src\Ymir `
-  -DCMAKE_TOOLCHAIN_FILE=C:\src\Ymir\vcpkg\scripts\buildsystems\vcpkg.cmake `
-  -DVCPKG_TARGET_TRIPLET=x64-win-llvm-static-md `
-  -DVCPKG_OVERLAY_TRIPLETS=C:\src\Ymir\vcpkg-triplets `
-  -DVCPKG_INSTALLED_DIR=C:\src\Ymir\vcpkg_installed `
-  -DCMAKE_PREFIX_PATH=C:\src\Ymir\vcpkg_installed\x64-win-llvm-static-md
+git clone --branch v0.4.1 --depth 1 https://github.com/ymir-emu/Ymir.git .build/ymir
+./tools/release/Build-Ymir.ps1
 ```
 
-Build:
+The script initializes upstream's vendor submodules, configures a Release build using `clang-cl`, builds `.build/native/telesto-ymir-core.dll`, and runs CTest. It uses upstream's supported `Ymir_LIBRARY_ONLY` switch and does not rewrite upstream source files. Optional libchdr LZMA assembly is disabled.
+
+To configure manually, run from a Visual Studio x64 developer shell where Clang, Ninja, CMake and DXC are on PATH:
 
 ```powershell
-cmake --build native\ymir-telesto-core\build --config Release --parallel
+cmake -S native/ymir-telesto-core -B .build/native -G Ninja `
+  -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl `
+  "-DTELESTO_YMIR_SOURCE_DIR=$PWD/.build/ymir" -DBUILD_TESTING=ON
+cmake --build .build/native --parallel 4
+ctest --test-dir .build/native --output-on-failure
+dotnet build Emutastic.sln -c Release "/p:YmirNativeDir=$PWD/.build/native"
 ```
 
-If vcpkg dependencies are not installed yet, bootstrap Ymir's vcpkg checkout and
-install the manifest first:
+## Current API
 
-```powershell
-C:\src\Ymir\vcpkg\bootstrap-vcpkg.bat
-C:\src\Ymir\vcpkg\vcpkg.exe install --triplet x64-win-llvm-static-md `
-  --x-manifest-root=C:\src\Ymir `
-  --overlay-triplets=C:\src\Ymir\vcpkg-triplets
-```
+- Context create/destroy and last-error reporting.
+- Software video and stereo audio callbacks.
+- IPL/disc loading, reset and frame stepping.
+- Internal backup RAM and 32 Mbit backup RAM cartridge images.
+- Digital Saturn pads on ports 1 and 2.
 
-The output DLL is the native dependency Telesto should load for the in-process
-Ymir path.
-
-The wrapper disables libchdr's optional LZMA assembly path so the build does not
-require `ml64.exe` from a full Visual Studio developer environment.
-
-## MVP Surface
-
-The exported C ABI currently covers:
-
-- Create/destroy context
-- Set software video callback
-- Set stereo sample callback
-- Load IPL ROM
-- Load disc image
-- Load internal backup RAM image
-- Insert a 32 Mbit backup RAM cartridge
-- Set Saturn control pad pressed-state masks for ports 1 and 2
-- Hard/soft reset
-- Run one emulated frame
-
-That is enough for a first casual-user Saturn core inside Telesto's own emulator
-window. It deliberately skips Ymir app features such as settings UI, update
-checks, rewind, debugger, MIDI devices, exotic controllers, and Ymir's SDL input
-stack.
-
-## Telesto Integration Steps
-
-1. Build and ship `telesto-ymir-core.dll`.
-2. Add a managed `YmirNativeCore` P/Invoke wrapper.
-3. Add an emulator window path that accepts a non-libretro backend.
-4. Feed software-rendered frames from the native video callback into Telesto's
-   existing `Image`/bitmap presentation path, converting the channel order for
-   WPF presentation.
-5. Feed audio samples into Telesto's existing audio queue.
-6. Map Telesto Saturn controls into the exported `TelestoYmirButton` mask.
-7. Keep save states disabled until Ymir's cereal serializers are included in
-   this wrapper or a stable wrapper-owned state format is chosen.
-
-The managed side currently loads this DLL through `YmirNativeCore` and runs it
-in `YmirEmulatorWindow`. That window is intentionally minimal: video, audio,
-disc boot, BIOS discovery, internal backup RAM, a simple backup RAM cartridge,
-and digital Saturn pad input only.
+The managed side uses `YmirNativeCore` and `YmirEmulatorWindow`. Save states, serialization, disc swapping, shaders, achievements, screenshots and recording remain deferred. The lifecycle smoke test does not require BIOS files or games and does not certify gameplay compatibility.

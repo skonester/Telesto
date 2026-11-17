@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.28)
 
 project(telesto-ymir-core LANGUAGES CXX)
 
-set(TELESTO_YMIR_SOURCE_DIR "" CACHE PATH "Path to a local StrikerX3/Ymir checkout")
+set(TELESTO_YMIR_SOURCE_DIR "" CACHE PATH "Path to a local ymir-emu/Ymir checkout (v0.4.1 or newer)")
 
 if (NOT TELESTO_YMIR_SOURCE_DIR)
-    message(FATAL_ERROR "Set TELESTO_YMIR_SOURCE_DIR to a local StrikerX3/Ymir checkout")
+    message(FATAL_ERROR "Set TELESTO_YMIR_SOURCE_DIR to a local ymir-emu/Ymir checkout")
 endif ()
 
 set(Ymir_ENABLE_SANDBOX OFF CACHE BOOL "" FORCE)
@@ -19,24 +19,10 @@ set(Ymir_ENABLE_DEVLOG OFF CACHE BOOL "" FORCE)
 set(Ymir_ENABLE_DEV_ASSERTIONS OFF CACHE BOOL "" FORCE)
 set(Ymir_DEV_BUILD OFF CACHE BOOL "" FORCE)
 set(WITH_LZMA_ASM OFF CACHE BOOL "" FORCE)
+set(Ymir_LIBRARY_ONLY ON CACHE BOOL "" FORCE)
 
-# Upstream Ymir unconditionally builds ymir-sdl3 (apps/) which pulls in
-# CURL, SDL3, etc.  We only need ymir::ymir-core from libs/, so we inject
-# a no-op apps/CMakeLists.txt via CMAKE_SOURCE_DIR trickery won't work.
-# Instead, we temporarily redirect the apps subdirectory to an empty stub
-# so the upstream add_subdirectory(apps) is harmless.
-set(_ymir_apps_dir "${TELESTO_YMIR_SOURCE_DIR}/apps")
-set(_stub_apps_dir "${CMAKE_CURRENT_BINARY_DIR}/stub-apps")
-file(MAKE_DIRECTORY "${_stub_apps_dir}")
-file(WRITE "${_stub_apps_dir}/CMakeLists.txt" "# stub — skip ymir-sdl3 for the Telesto wrapper build\n")
-file(RENAME "${_ymir_apps_dir}/CMakeLists.txt" "${_ymir_apps_dir}/CMakeLists.txt.orig")
-file(COPY_FILE "${_stub_apps_dir}/CMakeLists.txt" "${_ymir_apps_dir}/CMakeLists.txt")
-
+# Upstream supports library-only embedding; leave its source tree untouched.
 add_subdirectory("${TELESTO_YMIR_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/ymir")
-
-# Restore the original apps/CMakeLists.txt so we don't leave the Ymir
-# checkout in a modified state.
-file(RENAME "${_ymir_apps_dir}/CMakeLists.txt.orig" "${_ymir_apps_dir}/CMakeLists.txt")
 
 add_library(telesto-ymir-core SHARED
     include/telesto_ymir_core.h
@@ -66,4 +52,12 @@ if (MSVC)
     target_compile_options(telesto-ymir-core PRIVATE /W4 /permissive-)
 else ()
     target_compile_options(telesto-ymir-core PRIVATE -Wall -Wextra -Wpedantic)
+endif ()
+
+include(CTest)
+if (BUILD_TESTING)
+    add_executable(telesto-ymir-smoke tests/smoke.cpp)
+    target_link_libraries(telesto-ymir-smoke PRIVATE telesto::ymir-core)
+    add_test(NAME telesto-ymir-smoke COMMAND telesto-ymir-smoke)
+    set_tests_properties(telesto-ymir-smoke PROPERTIES TIMEOUT 60)
 endif ()

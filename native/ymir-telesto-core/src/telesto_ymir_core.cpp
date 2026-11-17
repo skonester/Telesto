@@ -80,9 +80,9 @@ struct TelestoYmirContext {
     }
 
     TelestoYmirContext() {
-        saturn.configuration.video.threadedVDP1 = true;
-        saturn.configuration.video.threadedVDP2 = true;
-        saturn.configuration.video.threadedDeinterlacer = true;
+        saturn.configuration.swRenderer.threadedVDP1 = true;
+        saturn.configuration.swRenderer.threadedVDP2 = true;
+        saturn.configuration.swRenderer.threadedDeinterlacer = true;
         saturn.configuration.system.emulateSH2Cache = false;
         saturn.configuration.cdblock.useLLE = false;
 

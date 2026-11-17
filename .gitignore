@@ -2,9 +2,13 @@
 bin/
 obj/
 native/**/build*/
+.build/
+dist/
 
 # Release artifacts
 Emutastic-v*.zip
+Telesto-*.zip
+Telesto-*-setup.exe
 
 # Claude tooling
 .claude/
@@ -34,4 +38,3 @@ Emutastic/Assets/openvgdb.sqlite
 Thumbs.db
 Desktop.ini
 .DS_Store
-CONTRIBUTING.md

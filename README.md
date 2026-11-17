@@ -3,10 +3,16 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![GitHub Contributors](https://img.shields.io/github/contributors/skonester/telesto.svg)](https://github.com/skonester/telesto/graphs/contributors)
 [![GitHub Downloads](https://img.shields.io/github/downloads/skonester/telesto/total.svg)](https://github.com/skonester/telesto/releases)
+[![Build and release](https://github.com/skonester/Telesto/actions/workflows/release.yml/badge.svg)](https://github.com/skonester/Telesto/actions/workflows/release.yml)
+[![Latest release](https://img.shields.io/github/v/release/skonester/Telesto)](https://github.com/skonester/Telesto/releases/latest)
 
 **Telesto** is a Windows emulator frontend forked from **Emutastic**, with development focused on **Sega Saturn emulation and Ymir integration**. It retains Emutastic's multi-system libretro library, import tools, themes, and controller configuration.
 
 Named after Saturn's moon, Telesto builds on the work of Emutastic creator **codingncaffeine** and the OpenEmu-inspired Windows frontend. See [AUTHORS.md](AUTHORS.md) for project attribution and [CHANGELOG.md](CHANGELOG.md) for recent changes.
+
+**[Download for Windows x64](https://github.com/skonester/Telesto/releases/latest)** · [Report a problem](https://github.com/skonester/Telesto/issues/new/choose) · [Contribute](CONTRIBUTING.md)
+
+Weekly builds are scheduled for Mondays at 09:23 UTC. Each successful release has a unique version such as `2026.11.17.42`, a ZIP and installer, SHA256 checksums, and `build-info.json` identifying the exact Telesto and Ymir source commits. Weekly builds follow the latest stable upstream Ymir release; embedded Ymir remains experimental. See the [release guide](docs/releases.md) for activation, version history, and manual builds.
 
 ![Telesto Banner](Emutastic/Assets/banners%20and%20icons/emutastic-banner-scaled.png)
 
@@ -178,11 +184,11 @@ Output goes to `Emutastic\bin\Publish\win-x64\`. The release workflow also downl
 
 ### Including Ymir
 
-The managed build does **not** compile the native Ymir wrapper. Follow the [native wrapper build instructions](native/ymir-telesto-core/README.md) using a separate Ymir checkout, CMake 3.28+, Ninja, a C++20 toolchain, and Ymir's vcpkg dependencies.
+The managed build does **not** compile the native Ymir wrapper. Follow the [native wrapper build instructions](native/ymir-telesto-core/README.md) using a separate Ymir checkout, CMake 3.28+, Ninja, Clang, and the Visual Studio C++ tools/Windows SDK. The library-only build needs no vcpkg dependencies.
 
-Use `native\ymir-telesto-core\build-release` as the CMake build directory (replace the native guide's `-B` and `cmake --build` paths). The app project copies `telesto-ymir-core.dll` from that directory into build/publish output **only when it already exists**. The release workflow currently has no native-wrapper build step.
+The release workflow checks out a resolved upstream Ymir commit, builds and smoke tests `telesto-ymir-core.dll`, and downloads the matching official standalone package. Pull requests and pushes to `main` also verify the complete package without publishing a release.
 
-Standalone Ymir executables and supporting files are copied from `portable\ymircore` when present. The older `ymir-core.dll` in that payload is not the embedded `telesto-ymir-core.dll` adapter and is not copied by the app's Ymir publish rules.
+For local builds, the app defaults to the wrapper under `native\ymir-telesto-core\build-release` and the legacy standalone files under `portable\ymircore`. Override `/p:YmirNativeDir=...` and `/p:YmirRuntimeDir=...` to use freshly built/downloaded runtimes. The old standalone executable reports Ymir `0.3.1`; its exact source commit is unknown. Firmware and the legacy debug `ymir-core.dll` are excluded from new packages.
 
 ---
 

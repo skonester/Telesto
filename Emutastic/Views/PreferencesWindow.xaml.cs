@@ -4098,12 +4098,10 @@ namespace Emutastic.Views
 
         private void LoadAboutSettings()
         {
-            // Installed version comes from the assembly (set in csproj via auto-versioning,
-            // or defaults to 1.0.0.0 in dev builds). Strip the trailing ".0" if present
-            // so it reads as "1.3.10" instead of "1.3.10.0".
+            // Weekly releases use the fourth component for the workflow run number.
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             string installedDisplay = version != null
-                ? $"v{version.Major}.{version.Minor}.{version.Build}"
+                ? $"v{version.ToString(version.Revision > 0 ? 4 : 3)}"
                 : "v?.?.?";
             AboutInstalledVersionText.Text = installedDisplay;
 
@@ -4198,9 +4196,9 @@ namespace Emutastic.Views
             if (!Version.TryParse(trimmed, out var remote)) return false;
             var local = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             if (local == null) return false;
-            // Only compare Major.Minor.Build — the user-visible release scheme is 3-part.
-            var localTrimmed  = new Version(local.Major,  local.Minor,  local.Build);
-            var remoteTrimmed = new Version(remote.Major, remote.Minor, remote.Build);
+            // Treat a missing revision as zero for older three-part release tags.
+            var localTrimmed  = new Version(local.Major, local.Minor, Math.Max(0, local.Build), Math.Max(0, local.Revision));
+            var remoteTrimmed = new Version(remote.Major, remote.Minor, Math.Max(0, remote.Build), Math.Max(0, remote.Revision));
             comparison = remoteTrimmed.CompareTo(localTrimmed);
             return true;
         }

@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible Telesto problem
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Telesto version
+      description: Copy Preferences > About, and include build-info.json if available.
+    validations:
+      required: true
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Backend
+      options:
+        - Frontend / setup
+        - Libretro (include core name below)
+        - Ymir embedded
+        - Ymir standalone
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: What happened and how to reproduce it
+      description: Include expected behavior, Windows version, and for emulation the game title/region, disc format, and core name. Do not upload games or BIOS files.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or screenshots
+      description: Remove personal paths, credentials, and account details.

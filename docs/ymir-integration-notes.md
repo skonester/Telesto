@@ -1,5 +1,7 @@
 # Ymir Integration Notes
 
+> Historical integration investigation. The release build now uses upstream Ymir v0.4.1 or newer through its supported library-only mode; the old bundled standalone binary reports 0.3.1 and its exact source commit is unknown. See [releases.md](releases.md) and the [current wrapper guide](../native/ymir-telesto-core/README.md) for maintained build instructions. The legacy debug DLL and firmware described below are excluded from new packages.
+
 ## Current Telesto Shape
 
 Telesto currently treats emulator backends as libretro cores:

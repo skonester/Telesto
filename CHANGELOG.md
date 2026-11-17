@@ -1,3 +1,12 @@
+## Unreleased - release automation and Ymir refresh
+
+- Add weekly and manual GitHub releases with a unique calendar version, ZIP, installer, SHA256 checksums, and exact frontend/upstream source provenance.
+- Build and smoke test the embedded Ymir DLL in CI; update the adapter and pinned development baseline to upstream Ymir v0.4.1. Weekly packages follow the latest stable upstream release for both embedded and standalone backends.
+- Use upstream's library-only build mode instead of temporarily rewriting its CMake files.
+- Display and compare the full four-part release version in Preferences > About.
+- Preserve standalone runtime dependencies/licenses and the OpenVGDB database in packages; exclude firmware and legacy debug binaries.
+- Add package verification on pull requests and main-branch pushes, a release maintenance guide, contributor instructions, and a bug report form.
+
 ### Documentation
 
 - Updated `AUTHORS.md` to credit the Telesto fork maintainer and preserve upstream Emutastic attribution.

@@ -1,79 +1,161 @@
-name: Release
+name: Build and release
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches: [main]
+    tags: ['v*.*.*']
+  pull_request:
+  schedule:
+    # Mondays at 09:23 UTC (03:23 CST / 04:23 CDT).
+    - cron: '23 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      latest_ymir:
+        description: Build against the latest stable Ymir release
+        type: boolean
+        default: true
+      publish_release:
+        description: Publish a new version to Releases after all checks pass
+        type: boolean
+        default: true
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
+    timeout-minutes: 90
+    outputs:
+      tag: ${{ steps.metadata.outputs.tag }}
+      version: ${{ steps.metadata.outputs.version }}
     steps:
-      - name: Checkout
+      - name: Checkout Telesto
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
 
-      - name: Download OpenVGDB
+      - name: Setup known working CMake
         run: |
-          $release = Invoke-RestMethod "https://api.github.com/repos/OpenVGDB/OpenVGDB/releases/latest"
-          $asset = $release.assets | Where-Object { $_.name -like "openvgdb*" } | Select-Object -First 1
-          Invoke-WebRequest -Uri $asset.browser_download_url -OutFile openvgdb.zip
-          Expand-Archive -Path openvgdb.zip -DestinationPath Emutastic/Assets/ -Force
-          Remove-Item openvgdb.zip
-        shell: pwsh
+          python -m pip install --disable-pip-version-check --target .build/cmake-python cmake==3.31.10
+          if ($LASTEXITCODE -ne 0) { throw 'Could not install CMake.' }
+          "$env:GITHUB_WORKSPACE/.build/cmake-python/cmake/data/bin" | Add-Content $env:GITHUB_PATH
 
-      - name: Create Cores folder
-        run: New-Item -ItemType Directory -Force -Path Emutastic/Cores | Out-Null
-        shell: pwsh
+      - name: Test release version rules
+        run: ./tools/release/Test-ReleaseVersion.ps1
 
-      - name: Publish
-        # Strip the leading 'v' from the tag so /p:Version receives "1.3.10" not "v1.3.10"
-        # — System.Version doesn't accept the v-prefix. Sets AssemblyVersion / FileVersion
-        # so the About tab in-app reads the actual release version.
-        run: |
-          $tag = "${{ github.ref_name }}"
-          $ver = $tag.TrimStart('v','V')
-          dotnet publish Emutastic/Emutastic.csproj /p:PublishProfile=Release-win-x64 /p:Version=$ver
-        shell: pwsh
-
-      - name: Zip release
-        run: |
-          $version = "${{ github.ref_name }}"
-          $zipName = "Telesto-$version-win-x64.zip"
-          $publishDir = "Emutastic/bin/Publish/win-x64"
-          # Single-file publish bundles README.txt into the .exe — copy it back
-          # out alongside the .exe so players can actually read it.
-          Copy-Item "Emutastic/README.txt" $publishDir -Force
-          Compress-Archive -Path "$publishDir/*" -DestinationPath $zipName
-          echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
-        shell: pwsh
-
-      - name: Build Installer
-        run: |
-          $version = "${{ github.ref_name }}"
-          $ver = $version.TrimStart('v','V')
-          $iscc = Get-Command iscc -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
-          if (-not $iscc) {
-              $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-          }
-          & $iscc /DMyAppVersion=$ver installer.iss
-          $setupName = "Telesto-$ver-win-x64-setup.exe"
-          echo "SETUP_NAME=$setupName" >> $env:GITHUB_ENV
-        shell: pwsh
-
-      - name: Create GitHub Release
+      - name: Resolve version and Ymir source
+        id: metadata
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          LATEST_YMIR: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.latest_ymir) }}
+        run: ./tools/release/Prepare-Release.ps1 -LatestYmir:($env:LATEST_YMIR -eq 'true')
+
+      - name: Checkout resolved Ymir source
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.metadata.outputs.ymir_repository }}
+          ref: ${{ steps.metadata.outputs.ymir_commit }}
+          path: .build/ymir
+          persist-credentials: false
+
+      - name: Build and smoke test embedded Ymir
+        run: ./tools/release/Build-Ymir.ps1
+
+      - name: Download matching standalone Ymir
+        id: runtime
+        run: ./tools/release/Get-YmirRuntime.ps1
+
+      - name: Download OpenVGDB
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.ref_name }}" "$env:ZIP_NAME" "$env:SETUP_NAME" `
-            --title "Telesto ${{ github.ref_name }}" `
-            --draft `
-            --generate-notes
-        shell: pwsh
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; 'User-Agent' = 'Telesto-release' }
+          $release = Invoke-RestMethod 'https://api.github.com/repos/OpenVGDB/OpenVGDB/releases/latest' -Headers $headers
+          $asset = @($release.assets | Where-Object { $_.name -like 'openvgdb*.zip' })
+          if ($asset.Count -ne 1) { throw 'Expected one OpenVGDB archive.' }
+          Invoke-WebRequest $asset[0].browser_download_url -OutFile .build/openvgdb.zip
+          Expand-Archive .build/openvgdb.zip .build/openvgdb -Force
+          Copy-Item .build/openvgdb/openvgdb.sqlite Emutastic/Assets/openvgdb.sqlite -Force
+          if (-not (Test-Path Emutastic/Assets/openvgdb.sqlite)) { throw 'OpenVGDB database missing.' }
+
+      - name: Publish self-contained Telesto
+        env:
+          RELEASE_VERSION: ${{ steps.metadata.outputs.version }}
+          YMIR_RUNTIME: ${{ steps.runtime.outputs.runtime_dir }}
+        run: |
+          $info = Get-Content .build/build-info.json -Raw | ConvertFrom-Json
+          $identity = "$env:RELEASE_VERSION+telesto.$($info.telesto_commit).ymir.$($info.ymir_commit)"
+          dotnet publish Emutastic/Emutastic.csproj /p:PublishProfile=Release-win-x64 `
+            "/p:PublishDir=$env:GITHUB_WORKSPACE/.build/publish/" `
+            /p:Version=$env:RELEASE_VERSION /p:InformationalVersion=$identity `
+            /p:IncludeSourceRevisionInInformationalVersion=false `
+            "/p:YmirRuntimeDir=$env:YMIR_RUNTIME" "/p:YmirNativeDir=$env:GITHUB_WORKSPACE/.build/native"
+          if ($LASTEXITCODE -ne 0) { throw 'Telesto publish failed.' }
+
+      - name: Verify package and build installer
+        run: ./tools/release/Package-Release.ps1
+
+      - name: Preserve tested release assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    needs: build
+    if: >-
+      github.repository == 'skonester/Telesto' &&
+      (github.event_name == 'schedule' ||
+       (github.event_name == 'workflow_dispatch' && inputs.publish_release && github.ref == 'refs/heads/main') ||
+       startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download tested release assets
+        uses: actions/download-artifact@v4
+        with:
+          name: release-assets
+          path: dist
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $info = Get-Content dist/build-info.json -Raw | ConvertFrom-Json
+          if ($info.telesto_dirty) { throw 'Release source tree was not clean.' }
+          # Retries can finish a draft, but never replace published assets.
+          $existing = gh release view $env:RELEASE_TAG --json isDraft 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            if (-not ($existing | ConvertFrom-Json).isDraft) { throw 'This version is already published; start a new run.' }
+          } else {
+            gh release create $env:RELEASE_TAG --target $info.telesto_commit `
+              --title "Telesto $env:RELEASE_TAG" --draft --generate-notes --notes-file dist/release-notes.md
+            if ($LASTEXITCODE -ne 0) { throw 'Could not create release draft.' }
+          }
+          $assets = @(Get-ChildItem dist -File | Where-Object { $_.Name -ne 'release-notes.md' } | ForEach-Object FullName)
+          gh release upload $env:RELEASE_TAG @assets --clobber
+          if ($LASTEXITCODE -ne 0) { throw 'Could not upload release assets.' }
+          gh release edit $env:RELEASE_TAG --draft=false --latest
+          if ($LASTEXITCODE -ne 0) { throw 'Could not publish release.' }
