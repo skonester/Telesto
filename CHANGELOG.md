@@ -1,5 +1,7 @@
 ## Unreleased - release automation and Ymir refresh
 
+- Publish successful `main` pushes as releases as well as weekly/manual/tagged builds; upgrade artifact actions to Node.js 24 and pin SDK selection to .NET 8.
+
 - Add weekly and manual GitHub releases with a unique calendar version, ZIP, installer, SHA256 checksums, and exact frontend/upstream source provenance.
 - Build and smoke test the embedded Ymir DLL in CI; update the adapter and pinned development baseline to upstream Ymir v0.4.1. Weekly packages follow the latest stable upstream release for both embedded and standalone backends.
 - Use upstream's library-only build mode instead of temporarily rewriting its CMake files.

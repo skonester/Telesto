@@ -49,6 +49,9 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Show selected .NET SDK
+        run: dotnet --version
+
       - name: Setup known working CMake
         run: |
           python -m pip install --disable-pip-version-check --target .build/cmake-python cmake==3.31.10
@@ -111,7 +114,7 @@ jobs:
         run: ./tools/release/Package-Release.ps1
 
       - name: Preserve tested release assets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-assets
           path: dist/*
@@ -123,6 +126,7 @@ jobs:
     if: >-
       github.repository == 'skonester/Telesto' &&
       (github.event_name == 'schedule' ||
+       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
        (github.event_name == 'workflow_dispatch' && inputs.publish_release && github.ref == 'refs/heads/main') ||
        startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
@@ -131,7 +135,7 @@ jobs:
       contents: write
     steps:
       - name: Download tested release assets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: release-assets
           path: dist

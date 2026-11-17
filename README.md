@@ -186,7 +186,7 @@ Output goes to `Emutastic\bin\Publish\win-x64\`. The release workflow also downl
 
 The managed build does **not** compile the native Ymir wrapper. Follow the [native wrapper build instructions](native/ymir-telesto-core/README.md) using a separate Ymir checkout, CMake 3.28+, Ninja, Clang, and the Visual Studio C++ tools/Windows SDK. The library-only build needs no vcpkg dependencies.
 
-The release workflow checks out a resolved upstream Ymir commit, builds and smoke tests `telesto-ymir-core.dll`, and downloads the matching official standalone package. Pull requests and pushes to `main` also verify the complete package without publishing a release.
+The release workflow checks out a resolved upstream Ymir commit, builds and smoke tests `telesto-ymir-core.dll`, and downloads the matching official standalone package. Successful pushes to `main` also publish a version; pull requests verify the complete package without publishing a release.
 
 For local builds, the app defaults to the wrapper under `native\ymir-telesto-core\build-release` and the legacy standalone files under `portable\ymircore`. Override `/p:YmirNativeDir=...` and `/p:YmirRuntimeDir=...` to use freshly built/downloaded runtimes. The old standalone executable reports Ymir `0.3.1`; its exact source commit is unknown. Firmware and the legacy debug `ymir-core.dll` are excluded from new packages.
 

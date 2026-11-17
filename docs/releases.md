@@ -12,7 +12,7 @@
 
 `.github/workflows/release.yml` builds on pull requests, pushes to `main`, numeric version tags, manual dispatch, and Mondays at **09:23 UTC** (03:23 CST / 04:23 CDT).
 
-Only scheduled runs, manual runs on `main` with publishing enabled, and numeric version tags publish releases in `skonester/Telesto`. Pull requests and ordinary pushes upload downloadable workflow artifacts instead.
+Successful pushes to `main`, scheduled runs, manual runs on `main` with publishing enabled, and numeric version tags publish releases in `skonester/Telesto`. Pull requests upload downloadable workflow artifacts without publishing a release.
 
 Weekly/manual versions use `YEAR.MONTH.DAY.RUN_NUMBER`, for example `v2026.11.17.42`. Every new run gets a unique fourth component. Rerunning the same workflow run retains its version; an already published release is never overwritten. Old three-part numeric tags remain supported. Use calendar versions going forward: a new `v1.x` tag will compare older than calendar versions in the app.
 
@@ -36,6 +36,8 @@ GitHub schedules are best effort and can be delayed. Failures appear in Actions;
 ## Local equivalent
 
 Use Windows, .NET 8 SDK, Visual Studio 2022 C++ Build Tools with a Windows SDK containing DXC, Clang, CMake 3.28+, Ninja, and Inno Setup 6. CMake 3.31.10 is a known working version.
+
+`global.json` selects the latest installed .NET 8 SDK feature band rather than silently using a newer SDK preinstalled on a GitHub runner. The Windows App SDK dependency brought in by LibVLCSharp requires full-content extraction for single-file publishing; overriding that property to `false` breaks its build verification.
 
 ```powershell
 $env:GITHUB_RUN_NUMBER = '1'
